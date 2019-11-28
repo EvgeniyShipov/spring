@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="gameService" class="ru.otus.spring.service.GameService">
+        <constructor-arg ref="questionService"/>
+    </bean>
+
+    <bean id="questionService" class="ru.otus.spring.service.QuestionService">
+        <constructor-arg value="questions.csv"/>
+    </bean>
+
+</beans>
