@@ -6,10 +6,14 @@
 
     <bean id="gameService" class="ru.otus.spring.service.GameService">
         <constructor-arg ref="questionService"/>
+        <constructor-arg ref="ioService"/>
     </bean>
 
     <bean id="questionService" class="ru.otus.spring.service.QuestionService">
         <constructor-arg value="questions.csv"/>
+    </bean>
+
+    <bean id="ioService" class="ru.otus.spring.service.InOutService">
     </bean>
 
 </beans>

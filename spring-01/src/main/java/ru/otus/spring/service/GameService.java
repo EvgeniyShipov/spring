@@ -2,37 +2,42 @@ package ru.otus.spring.service;
 
 import ru.otus.spring.domain.User;
 
-import java.util.Scanner;
-
 public class GameService {
 
-    private final QuestionService questionService;
-    private final Scanner scanner;
+    static final String WELCOME_MESSAGE = "Добро пожаловать в игру!\nВведите имя";
+    static final String ASK_LAST_NAME = "Введите фамилию";
+    static final String CORRECT_ANSWER = "Это правильный ответ";
+    static final String INCORRECT_ANSWER = "Ответ не верный, правильный ответ ";
+    static final String RESULT_MESSAGE = "%s %s, ваш результат: %d";
 
-    public GameService(QuestionService questionService) {
+    private final QuestionService questionService;
+    private final InOutService ioService;
+
+    public GameService(QuestionService questionService, InOutService ioService) {
         this.questionService = questionService;
-        scanner = new Scanner(System.in);
+        this.ioService = ioService;
     }
 
     public void startGame() {
         User user = new User();
-        System.out.println("Добро пожаловать в игру!\nВведите имя");
-        user.setFirstName(scanner.nextLine());
+        ioService.write(WELCOME_MESSAGE);
 
-        System.out.println("Введите фамилию");
-        user.setLastName(scanner.nextLine());
+        user.setFirstName(ioService.read());
+
+        ioService.write(ASK_LAST_NAME);
+        user.setLastName(ioService.read());
 
         questionService.getQuestions().forEach((question, correctAnswer) -> {
-            System.out.println(question);
+            ioService.write(question);
 
-            if (correctAnswer.equalsIgnoreCase(scanner.nextLine())) {
-                System.out.println("Это правильный ответ");
+            if (correctAnswer.equalsIgnoreCase(ioService.read())) {
+                ioService.write(CORRECT_ANSWER);
                 user.setScore(user.getScore() + 1);
             } else {
-                System.out.println("Ответ не верный, правильный ответ " + correctAnswer);
+                ioService.write(INCORRECT_ANSWER + correctAnswer);
             }
         });
 
-        System.out.printf("%s %s, ваш результат: %d", user.getFirstName(), user.getLastName(), user.getScore());
+        ioService.writeFormat(RESULT_MESSAGE, user.getFirstName(), user.getLastName(), user.getScore());
     }
 }
