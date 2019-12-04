@@ -27,14 +27,19 @@ public class AppConfig {
     }
 
     @Bean
-    public GameService gameService(InOutService inOutService, @Value("${language}") String language) {
-        GameService gameService = new SimpleGameService(inOutService);
+    public QuestionService questionService(@Value("${language}") String language) {
+        QuestionService questionService = new SimpleQuestionService();
         Resource resource = "ru".equals(language)
                 ? resourceRu
                 : resourceEn;
 
-        gameService.init(resource);
-        return gameService;
+        questionService.init(resource);
+        return questionService;
+    }
+
+    @Bean
+    public GameController gameController(QuestionService gameService, InOutService inOutService) {
+        return new GameController(gameService, inOutService);
     }
 
     @Bean
@@ -43,10 +48,5 @@ public class AppConfig {
         ms.setBasename("/bundle");
         ms.setDefaultEncoding("UTF-8");
         return ms;
-    }
-
-    @Bean
-    public GameController gameController(GameService gameService) {
-        return new GameController(gameService);
     }
 }

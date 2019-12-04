@@ -9,6 +9,9 @@ import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Сервис ввода/вывода информации через консоль
+ */
 @Service
 @RequiredArgsConstructor
 public class ConsoleInOutService implements InOutService {
@@ -19,13 +22,15 @@ public class ConsoleInOutService implements InOutService {
     private final Locale locale;
 
     @Override
-    public void welcomeMessage() {
+    public String askName() {
         writer.println(messageSource.getMessage("message.welcome", null, locale));
+        return reader.nextLine();
     }
 
     @Override
-    public void askLastName() {
+    public String askLastName() {
         writer.println(messageSource.getMessage("message.name", null, locale));
+        return reader.nextLine();
     }
 
 
@@ -49,12 +54,8 @@ public class ConsoleInOutService implements InOutService {
     }
 
     @Override
-    public void write(String question) {
+    public String askQuestion(String question) {
         writer.println(question);
-    }
-
-    @Override
-    public String read() {
         return reader.nextLine();
     }
 }
