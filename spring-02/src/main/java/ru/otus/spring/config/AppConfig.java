@@ -6,8 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import ru.otus.spring.service.*;
+import ru.otus.spring.service.ConsoleInOutService;
+import ru.otus.spring.service.InOutService;
+import ru.otus.spring.service.QuestionService;
+import ru.otus.spring.service.SimpleQuestionService;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -16,30 +20,19 @@ import java.util.Scanner;
 @PropertySource("classpath:application.properties")
 public class AppConfig {
 
-    @Value("${questions.ru.path}")
-    private Resource resourceRu;
-    @Value("${questions.en.path}")
-    private Resource resourceEn;
-
     @Bean
-    public InOutService inOutService(MessageSource messageSource, @Value("${language}") Locale language) {
+    public InOutService consoleInOutService(MessageSource messageSource, @Value("${language}") Locale language) {
         return new ConsoleInOutService(new Scanner(System.in), System.out, messageSource, language);
     }
 
     @Bean
-    public QuestionService questionService(@Value("${language}") String language) {
+    public QuestionService simpleQuestionService(@Value("${language}") String language,
+                                                 @Value("${questions.file.name}") String fileName) {
         QuestionService questionService = new SimpleQuestionService();
-        Resource resource = "ru".equals(language)
-                ? resourceRu
-                : resourceEn;
+        Resource resource = new ClassPathResource(fileName.replace(".", "_" + language + "."));
 
         questionService.init(resource);
         return questionService;
-    }
-
-    @Bean
-    public GameController gameController(QuestionService gameService, InOutService inOutService) {
-        return new GameController(gameService, inOutService);
     }
 
     @Bean

@@ -20,7 +20,7 @@ class GameServiceTest {
     @BeforeEach
     void setUp() {
         gameService = new SimpleQuestionService();
-        Resource resource = new ClassPathResource("questions.CSV");
+        Resource resource = new ClassPathResource("questions_en.CSV");
         gameService.init(resource);
     }
 

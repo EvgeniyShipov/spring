@@ -1,7 +1,6 @@
 package ru.otus.spring.service;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Log
 @Service
-@RequiredArgsConstructor
 public class SimpleQuestionService implements QuestionService {
 
     @Getter
