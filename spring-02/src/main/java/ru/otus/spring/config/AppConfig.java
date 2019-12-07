@@ -8,10 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import ru.otus.spring.service.ConsoleInOutService;
-import ru.otus.spring.service.InOutService;
-import ru.otus.spring.service.QuestionService;
-import ru.otus.spring.service.SimpleQuestionService;
+import ru.otus.spring.service.*;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -21,8 +18,14 @@ import java.util.Scanner;
 public class AppConfig {
 
     @Bean
-    public InOutService consoleInOutService(MessageSource messageSource, @Value("${language}") Locale language) {
-        return new ConsoleInOutService(new Scanner(System.in), System.out, messageSource, language);
+    public MessageService localiseMessageService(@Value("${language}") Locale language, MessageSource messageSource,
+                                                  InOutService InOutService) {
+        return new LocaliseMessageService(language, messageSource, InOutService);
+    }
+
+    @Bean
+    public InOutService consoleInOutService() {
+        return new ConsoleInOutService(new Scanner(System.in), System.out);
     }
 
     @Bean

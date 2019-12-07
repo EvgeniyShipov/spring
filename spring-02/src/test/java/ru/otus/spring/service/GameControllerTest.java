@@ -13,14 +13,14 @@ import static org.mockito.Mockito.*;
 class GameControllerTest {
 
     private GameController gameController;
-    private SimpleQuestionService questionService;
-    private ConsoleInOutService inOutService;
+    private QuestionService questionService;
+    private MessageService messageService;
 
     @BeforeEach
     void setUp() {
         questionService = mock(SimpleQuestionService.class);
-        inOutService = mock(ConsoleInOutService.class);
-        gameController = new GameController(questionService, inOutService);
+        messageService = mock(LocaliseMessageService.class);
+        gameController = new GameController(questionService, messageService);
     }
 
     @Test
@@ -35,19 +35,19 @@ class GameControllerTest {
         String firstName = "firstName";
         String lastName = "lastName";
 
-        when(inOutService.askName()).thenReturn(firstName);
-        when(inOutService.askLastName()).thenReturn(lastName);
-        when(inOutService.askQuestion(question)).thenReturn(answer);
+        when(messageService.askName()).thenReturn(firstName);
+        when(messageService.askLastName()).thenReturn(lastName);
+        when(messageService.askQuestion(question)).thenReturn(answer);
 
         gameController.startGame();
 
-        verify(inOutService).askName();
-        verify(inOutService).askLastName();
-        verify(inOutService).askQuestion(question);
-        verify(inOutService).correctAnswer();
-        verify(inOutService).result(any(User.class));
+        verify(messageService).askName();
+        verify(messageService).askLastName();
+        verify(messageService).askQuestion(question);
+        verify(messageService).correctAnswer();
+        verify(messageService).result(any(User.class));
 
-        verifyNoMoreInteractions(inOutService);
+        verifyNoMoreInteractions(messageService);
     }
 
     @Test
@@ -62,18 +62,18 @@ class GameControllerTest {
         String firstName = "firstName";
         String lastName = "lastName";
 
-        when(inOutService.askName()).thenReturn(firstName);
-        when(inOutService.askLastName()).thenReturn(lastName);
-        when(inOutService.askQuestion(question)).thenReturn("неверный ответ");
+        when(messageService.askName()).thenReturn(firstName);
+        when(messageService.askLastName()).thenReturn(lastName);
+        when(messageService.askQuestion(question)).thenReturn("неверный ответ");
 
         gameController.startGame();
 
-        verify(inOutService).askName();
-        verify(inOutService).askLastName();
-        verify(inOutService).askQuestion(question);
-        verify(inOutService).incorrectAnswer(answer);
-        verify(inOutService).result(any(User.class));
+        verify(messageService).askName();
+        verify(messageService).askLastName();
+        verify(messageService).askQuestion(question);
+        verify(messageService).incorrectAnswer(answer);
+        verify(messageService).result(any(User.class));
 
-        verifyNoMoreInteractions(inOutService);
+        verifyNoMoreInteractions(messageService);
     }
 }

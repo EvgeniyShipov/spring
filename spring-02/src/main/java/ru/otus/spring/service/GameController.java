@@ -9,25 +9,25 @@ import ru.otus.spring.domain.User;
 public class GameController {
 
     private final QuestionService questionService;
-    private final InOutService ioService;
+    private final MessageService messageService;
 
     public void startGame() {
         User user = new User();
-        user.setFirstName(ioService.askName());
-        user.setLastName(ioService.askLastName());
+        user.setFirstName(messageService.askName());
+        user.setLastName(messageService.askLastName());
 
         questionService.getQuestions().forEach(question -> {
-            String userAnswer = ioService.askQuestion(question.getQuestion());
+            String userAnswer = messageService.askQuestion(question.getQuestion());
             String correctAnswer = question.getAnswer();
 
             if (correctAnswer.equalsIgnoreCase(userAnswer)) {
-                ioService.correctAnswer();
+                messageService.correctAnswer();
                 user.setScore(user.getScore() + 1);
             } else {
-                ioService.incorrectAnswer(correctAnswer);
+                messageService.incorrectAnswer(correctAnswer);
             }
         });
 
-        ioService.result(user);
+        messageService.result(user);
     }
 }

@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 class GameServiceTest {
 
-    private SimpleQuestionService gameService;
+    private QuestionService gameService;
 
     @BeforeEach
     void setUp() {
