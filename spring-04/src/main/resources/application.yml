@@ -1,0 +1,6 @@
+questions:
+  file:
+    name: questions.csv
+
+application:
+  language: ru
