@@ -2,6 +2,8 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -13,15 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class GameServiceTest {
+@SpringBootTest
+class QuestionServiceTest {
 
-    private QuestionService gameService;
+    @Autowired
+    private QuestionService questionService;
 
     @BeforeEach
     void setUp() {
-        gameService = new SimpleQuestionService();
         Resource resource = new ClassPathResource("questions_en.CSV");
-        gameService.init(resource);
+        questionService.init(resource);
     }
 
     @Test
@@ -33,11 +36,11 @@ class GameServiceTest {
         ByteArrayInputStream inputStream = new ByteArrayInputStream((question + ";" + answer).getBytes());
         when(resource.getInputStream()).thenReturn(inputStream);
 
-        assertDoesNotThrow(() -> gameService.init(resource));
+        assertDoesNotThrow(() -> questionService.init(resource));
 
-        assertThat(gameService.getQuestions()).hasSize(1);
-        assertEquals(question, gameService.getQuestions().get(0).getQuestion());
-        assertEquals(answer, gameService.getQuestions().get(0).getAnswer());
+        assertThat(questionService.getQuestions()).hasSize(1);
+        assertEquals(question, questionService.getQuestions().get(0).getQuestion());
+        assertEquals(answer, questionService.getQuestions().get(0).getAnswer());
     }
 
     @Test
@@ -46,6 +49,6 @@ class GameServiceTest {
 
         when(resource.getInputStream()).thenThrow(new IOException());
 
-        assertThrows(IllegalArgumentException.class, () -> gameService.init(resource));
+        assertThrows(IllegalArgumentException.class, () -> questionService.init(resource));
     }
 }

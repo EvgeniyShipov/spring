@@ -1,31 +1,28 @@
 package ru.otus.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import ru.otus.spring.domain.User;
 
 import java.util.Locale;
 
-import static java.util.Locale.ENGLISH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class LocaliseMessageServiceTest {
 
+    @MockBean
     private MessageSource messageSource;
+    @MockBean
     private InOutService inOutService;
+    @Autowired
     private LocaliseMessageService messageService;
-    private Locale locale;
-
-    @BeforeEach
-    void setUp() {
-        locale = ENGLISH;
-        messageSource = mock(MessageSource.class);
-        inOutService = mock(InOutService.class);
-        messageService = new LocaliseMessageService(locale, messageSource, inOutService);
-    }
+    private Locale locale = Locale.forLanguageTag("ru");
 
     @Test
     void askName() {
@@ -100,12 +97,12 @@ class LocaliseMessageServiceTest {
 
         String message = "message";
         Object[] params = {firstName, lastName, String.valueOf(score)};
-        when(messageSource.getMessage(anyString(),  eq(params), eq(locale)))
+        when(messageSource.getMessage(anyString(), eq(params), eq(locale)))
                 .thenReturn(message);
 
         messageService.result(user);
 
-        verify(messageSource).getMessage(anyString(),  eq(params), eq(locale));
+        verify(messageSource).getMessage(anyString(), eq(params), eq(locale));
         verify(inOutService).write(message);
         verifyNoMoreInteractions(messageSource);
         verifyNoMoreInteractions(inOutService);

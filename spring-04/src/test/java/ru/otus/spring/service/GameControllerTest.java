@@ -1,7 +1,9 @@
 package ru.otus.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.User;
 
@@ -11,18 +13,15 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class GameControllerTest {
 
+    @Autowired
     private GameController gameController;
+    @MockBean
     private QuestionService questionService;
+    @MockBean
     private MessageService messageService;
-
-    @BeforeEach
-    void setUp() {
-        questionService = mock(SimpleQuestionService.class);
-        messageService = mock(LocaliseMessageService.class);
-        gameController = new GameController(questionService, messageService);
-    }
 
     @Test
     void startGameTest() {
