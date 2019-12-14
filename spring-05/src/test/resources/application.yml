@@ -1,0 +1,14 @@
+questions:
+  file:
+    name: questions.csv
+
+application:
+  language: ru
+
+spring:
+  messages:
+    basename: bundle
+    encoding: UTF-8
+  shell:
+    interactive:
+      enabled: false
