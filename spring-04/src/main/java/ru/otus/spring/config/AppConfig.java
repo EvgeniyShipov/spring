@@ -39,12 +39,4 @@ public class AppConfig {
         questionService.init(resource);
         return questionService;
     }
-
-    @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setBasename("/bundle");
-        ms.setDefaultEncoding("UTF-8");
-        return ms;
-    }
 }

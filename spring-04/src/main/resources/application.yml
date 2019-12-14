@@ -4,3 +4,8 @@ questions:
 
 application:
   language: ru
+
+spring:
+  messages:
+    basename: bundle
+    encoding: UTF-8
