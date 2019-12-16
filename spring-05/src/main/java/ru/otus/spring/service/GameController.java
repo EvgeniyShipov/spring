@@ -34,4 +34,8 @@ public class GameController {
 
         messageService.result(user);
     }
+
+    public boolean isLogin() {
+        return user != null;
+    }
 }
