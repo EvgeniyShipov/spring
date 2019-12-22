@@ -7,7 +7,6 @@ spring:
     schema: schema.sql
     data: data.sql
 
-
   shell:
     interactive:
       enabled: false
