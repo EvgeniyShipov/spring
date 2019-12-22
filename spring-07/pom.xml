@@ -10,7 +10,7 @@
     </parent>
     <groupId>ru.otus</groupId>
     <artifactId>spring-07</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>spring-07</name>
 
     <properties>
@@ -32,11 +32,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
