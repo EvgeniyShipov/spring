@@ -7,4 +7,4 @@ insert into JENRE ("NAME") values ('DRAMA');
 insert into JENRE ("NAME") values ('HORROR');
 
 insert into BOOKS ("TITLE", "ID_AUTHOR", "ID_JENRE")
-    values ('The Winter of Our Discontent', 1, 2);
+    values ('The Winter of Our Discontent', 1, 1);
