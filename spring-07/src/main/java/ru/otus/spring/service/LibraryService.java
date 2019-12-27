@@ -22,7 +22,7 @@ public class LibraryService {
         return bookDao.getAll();
     }
 
-    public Book getBook(int id) {
+    public Book getBook(long id) {
         return bookDao.getById(id);
     }
 
@@ -34,24 +34,17 @@ public class LibraryService {
         return jenreDao.getAll();
     }
 
-    public Book deleteBook(int id) {
+    public Book deleteBook(long id) {
         Book book = bookDao.getById(id);
         bookDao.deleteById(id);
-
-        int idAuthor = book.getIdAuthor();
-        List<Book> authorBooks = bookDao.getByAuthor(idAuthor);
-        if (authorBooks.isEmpty()) {
-            authorDao.deleteById(idAuthor);
-        }
-
         return book;
     }
 
-    public Book createBook(String title, int idAuthor, Jenre jenre) {
+    public Book createBook(String title, long idAuthor, long idJenre) {
         Book book = new Book()
                 .setTitle(title)
-                .setIdAuthor(idAuthor)
-                .setIdJenre(jenre.ordinal());
+                .setAuthor(authorDao.getById(idAuthor))
+                .setJenre(jenreDao.getById(idJenre));
         bookDao.create(book);
         return book;
     }
@@ -63,5 +56,11 @@ public class LibraryService {
                 .setPatronymic(patronymic);
         authorDao.create(author);
         return author;
+    }
+
+    public Jenre createJenre(String name) {
+        Jenre jenre = new Jenre().setType(name);
+        jenreDao.create(jenre);
+        return jenre;
     }
 }

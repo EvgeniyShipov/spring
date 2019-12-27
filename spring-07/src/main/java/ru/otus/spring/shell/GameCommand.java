@@ -30,16 +30,16 @@ public class GameCommand {
     }
 
     @ShellMethod(value = "delete book", key = {"delete-book", "db"})
-    public void deleteBook(@ShellOption int id) {
+    public void deleteBook(@ShellOption long id) {
         Book book = libraryService.deleteBook(id);
         System.out.println("Книга удалена: " + book);
     }
 
     @ShellMethod(value = "create book", key = {"create-book", "cb"})
     public void createBook(@ShellOption String title,
-                           @ShellOption int idAuthor,
-                           @ShellOption Jenre jenre) {
-        Book book = libraryService.createBook(title, idAuthor, jenre);
+                           @ShellOption long idAuthor,
+                           @ShellOption long idJenre) {
+        Book book = libraryService.createBook(title, idAuthor, idJenre);
         System.out.println("Добавлена новая книга: " + book);
     }
 
@@ -49,5 +49,11 @@ public class GameCommand {
                              @ShellOption String patronymic) {
         Author author = libraryService.createAuthor(name, surname, patronymic);
         System.out.println("Добавлен новый автор: " + author);
+    }
+
+    @ShellMethod(value = "create jenre", key = {"create-jenre", "cj"})
+    public void createAuthor(@ShellOption String name) {
+        Jenre jenre = libraryService.createJenre(name);
+        System.out.println("Добавлен новый ;fyh: " + jenre);
     }
 }

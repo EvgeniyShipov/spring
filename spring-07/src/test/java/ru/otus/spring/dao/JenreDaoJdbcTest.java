@@ -21,6 +21,10 @@ class JenreDaoJdbcTest {
     void getAll() {
         List<Jenre> jenres = jenreDaoJdbc.getAll();
 
-        assertThat(jenres).contains(Jenre.values());
+        assertThat(jenres).isNotNull();
+        assertThat(jenres.get(0).getType()).isEqualTo("COMEDY");
+        assertThat(jenres.get(1).getType()).isEqualTo("TRAGEDY");
+        assertThat(jenres.get(2).getType()).isEqualTo("DRAMA");
+        assertThat(jenres.get(3).getType()).isEqualTo("HORROR");
     }
 }

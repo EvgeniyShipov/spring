@@ -14,7 +14,6 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 
 @JdbcTest
 @Import(AuthorDaoJdbc.class)
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class AuthorDaoJdbcTest {
 
     @Autowired

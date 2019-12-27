@@ -6,8 +6,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class Book {
-    private int id;
+    private long id;
     private String title;
-    private int idAuthor;
-    private int idJenre;
+    private Author author;
+    private Jenre jenre;
 }

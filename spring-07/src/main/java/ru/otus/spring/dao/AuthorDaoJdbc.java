@@ -16,7 +16,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     private final RowMapper<Author> rowMapper = new BeanPropertyRowMapper<>(Author.class);
 
     @Override
-    public Author getById(int id) {
+    public Author getById(long id) {
         return jdbc.queryForObject("select * from AUTHORS where ID = ?", rowMapper, id);
     }
 
@@ -26,7 +26,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         jdbc.update("delete from AUTHORS where ID = ?", id);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Jenre;
 
@@ -16,11 +17,10 @@ import static ru.otus.spring.domain.Jenre.*;
 
 @JdbcTest
 @Import(BookDaoJdbc.class)
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class BookDaoJdbcTest {
     private static final String BOOK_TITLE = "The Winter of Our Discontent";
     private static final int AUTHOR_ID = 1;
-    private static final int JENRE_ID = TRAGEDY.ordinal();
+    private static final int JENRE_ID = 1;
     private static final int BOOK_ID = 1;
 
     @Autowired
@@ -32,18 +32,19 @@ class BookDaoJdbcTest {
 
         assertThat(book).isNotNull();
         assertThat(book.getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(book.getIdAuthor()).isEqualTo(AUTHOR_ID);
-        assertThat(book.getIdJenre()).isEqualTo(JENRE_ID);
+        assertThat(book.getAuthor().getId()).isEqualTo(AUTHOR_ID);
+        assertThat(book.getJenre().getId()).isEqualTo(JENRE_ID);
     }
 
     @Test
     void getByAuthor() {
-        List<Book> books = bookDaoJdbc.getByAuthor(AUTHOR_ID);
+        Author author = new Author().setId(AUTHOR_ID);
+        List<Book> books = bookDaoJdbc.getByAuthor(author);
 
         assertThat(books).isNotNull();
         assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(books.get(0).getIdAuthor()).isEqualTo(AUTHOR_ID);
-        assertThat(books.get(0).getIdJenre()).isEqualTo(JENRE_ID);
+        assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
+        assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
     }
 
     @Test
@@ -52,27 +53,30 @@ class BookDaoJdbcTest {
 
         assertThat(books).isNotNull();
         assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(books.get(0).getIdAuthor()).isEqualTo(AUTHOR_ID);
-        assertThat(books.get(0).getIdJenre()).isEqualTo(JENRE_ID);
+        assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
+        assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
     }
 
     @Test
     void create() {
         String title = "title";
-        int idAuthor = 1;
-        int jenreId = HORROR.ordinal();
+        Author author = new Author()
+                .setId(AUTHOR_ID);
+        Jenre jenre = new Jenre()
+                .setId(JENRE_ID)
+                .setType("horror");
         Book book = new Book()
                 .setTitle(title)
-                .setIdAuthor(idAuthor)
-                .setIdJenre(jenreId);
+                .setAuthor(author)
+                .setJenre(jenre);
 
         bookDaoJdbc.create(book);
 
         List<Book> books = bookDaoJdbc.getAll();
 
         assertThat(books.get(1).getTitle()).isEqualTo(title);
-        assertThat(books.get(1).getIdAuthor()).isEqualTo(idAuthor);
-        assertThat(books.get(1).getIdJenre()).isEqualTo(jenreId);
+        assertThat(books.get(1).getAuthor().getId()).isEqualTo(author.getId());
+        assertThat(books.get(1).getJenre().getId()).isEqualTo(jenre.getId());
     }
 
     @Test
@@ -85,15 +89,15 @@ class BookDaoJdbcTest {
 
     @Test
     void update() {
-        int changedJenre = DRAMA.ordinal();
+        Jenre jenre = new Jenre().setId(2).setType("drama");
 
         Book book = bookDaoJdbc.getById(BOOK_ID);
-        book.setIdJenre(changedJenre);
+        book.setJenre(jenre);
 
         bookDaoJdbc.update(book);
 
         Book resultBook = bookDaoJdbc.getById(BOOK_ID);
 
-        assertThat(resultBook.getIdJenre()).isEqualTo(changedJenre);
+        assertThat(resultBook.getJenre().getId()).isEqualTo(jenre.getId());
     }
 }

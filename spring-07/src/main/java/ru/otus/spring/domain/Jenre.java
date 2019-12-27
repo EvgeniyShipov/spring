@@ -1,8 +1,15 @@
 package ru.otus.spring.domain;
 
-public enum Jenre {
-    COMEDY,
-    TRAGEDY,
-    DRAMA,
-    HORROR
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+@Setter
+@Getter
+@ToString
+@Accessors(chain = true)
+public class Jenre {
+    private long id;
+    private String type;
 }

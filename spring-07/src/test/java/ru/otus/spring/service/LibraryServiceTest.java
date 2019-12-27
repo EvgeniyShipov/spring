@@ -2,7 +2,6 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import ru.otus.spring.dao.AuthorDao;
 import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.JenreDao;
@@ -17,9 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static ru.otus.spring.domain.Jenre.TRAGEDY;
 
-@JdbcTest
 class LibraryServiceTest {
     private LibraryService libraryService;
     private BookDao bookDao;
@@ -76,7 +73,7 @@ class LibraryServiceTest {
 
     @Test
     void getAllJenre() {
-        List<Jenre> jenres = Arrays.asList(Jenre.values());
+        List<Jenre> jenres = Arrays.asList(new Jenre(), new Jenre());
         when(jenreDao.getAll()).thenReturn(jenres);
 
         List<Jenre> resultJenre = libraryService.getAllJenre();
@@ -90,24 +87,18 @@ class LibraryServiceTest {
     @Test
     void deleteBook() {
         int bookId = 1;
-        int authorId = 1;
         Book book = new Book()
-                .setId(bookId)
-                .setIdAuthor(authorId);
+                .setId(bookId);
 
         when(bookDao.getById(bookId)).thenReturn(book);
-        when(bookDao.getByAuthor(authorId)).thenReturn(Collections.emptyList());
 
         Book resultBook = libraryService.deleteBook(bookId);
 
         assertThat(resultBook).isNotNull();
         assertThat(resultBook.getId()).isEqualTo(bookId);
-        assertThat(resultBook.getIdAuthor()).isEqualTo(authorId);
 
         verify(bookDao).getById(bookId);
         verify(bookDao).deleteById(bookId);
-        verify(bookDao).getByAuthor(authorId);
-        verify(authorDao).deleteById(authorId);
 
         verifyNoMoreInteractions(bookDao);
         verifyNoMoreInteractions(authorDao);
@@ -116,17 +107,24 @@ class LibraryServiceTest {
     @Test
     void createBook() {
         String title = "Title";
-        int authorId = 1;
-        Jenre jenre = TRAGEDY;
+        Author author =  new Author().setId(1);
+        Jenre jenre = new Jenre().setId(1).setType("tragedy");
 
-        Book resultBook = libraryService.createBook(title, authorId, jenre);
+        when(authorDao.getById(author.getId())).thenReturn(author);
+        when(jenreDao.getById(jenre.getId())).thenReturn(jenre);
+
+        Book resultBook = libraryService.createBook(title, author.getId(), jenre.getId());
 
         assertThat(resultBook).isNotNull();
         assertThat(resultBook.getTitle()).isEqualTo(title);
-        assertThat(resultBook.getIdAuthor()).isEqualTo(authorId);
-        assertThat(resultBook.getIdJenre()).isEqualTo(jenre.ordinal());
+        assertThat(resultBook.getAuthor().getId()).isEqualTo(author.getId());
+        assertThat(resultBook.getJenre()).isEqualTo(jenre);
         verify(bookDao).create(any(Book.class));
+        verify(authorDao).getById(author.getId());
+        verify(jenreDao).getById(jenre.getId());
         verifyNoMoreInteractions(bookDao);
+        verifyNoMoreInteractions(authorDao);
+        verifyNoMoreInteractions(jenreDao);
     }
 
     @Test
@@ -143,5 +141,15 @@ class LibraryServiceTest {
         assertThat(resultAuthor.getPatronymic()).isEqualTo(patronymic);
         verify(authorDao).create(any(Author.class));
         verifyNoMoreInteractions(authorDao);
+    }
+
+    @Test
+    void createJenre() {
+
+        String horror = "horror";
+        Jenre jenre = libraryService.createJenre(horror);
+
+        assertThat(jenre).isNotNull();
+        assertThat(jenre.getType()).isEqualTo(horror);
     }
 }
