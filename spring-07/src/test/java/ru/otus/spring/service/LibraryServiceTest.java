@@ -11,7 +11,6 @@ import ru.otus.spring.domain.Jenre;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,7 @@ class LibraryServiceTest {
         bookDao = mock(BookDao.class);
         authorDao = mock(AuthorDao.class);
         jenreDao = mock(JenreDao.class);
-        libraryService = new LibraryService(bookDao, authorDao, jenreDao);
+        libraryService = new SimpleLibraryService(bookDao, authorDao, jenreDao);
     }
 
     @Test
@@ -107,7 +106,7 @@ class LibraryServiceTest {
     @Test
     void createBook() {
         String title = "Title";
-        Author author =  new Author().setId(1);
+        Author author = new Author().setId(1);
         Jenre jenre = new Jenre().setId(1).setType("tragedy");
 
         when(authorDao.getById(author.getId())).thenReturn(author);
