@@ -16,23 +16,26 @@ public class GameCommand {
 
     @ShellMethod(value = "get all books", key = {"get-all-books", "gab"})
     public void getAllBooks() {
-        System.out.println(libraryService.getAllBooks());
+        libraryService.getAllBooks().forEach(book ->
+                System.out.printf("%s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
     }
 
     @ShellMethod(value = "get all authors", key = {"get-all-authors", "gaa"})
     public void getAllAuthors() {
-        System.out.println(libraryService.getAllAuthors());
+        libraryService.getAllAuthors().forEach(author ->
+                System.out.println(author.getFullName()));
     }
 
     @ShellMethod(value = "get all jenre", key = {"get-all-jenre", "gaj"})
     public void getAllJenre() {
-        System.out.println(libraryService.getAllJenre());
+        libraryService.getAllJenre().forEach(jenre ->
+                System.out.println(jenre.getType()));
     }
 
     @ShellMethod(value = "delete book", key = {"delete-book", "db"})
     public void deleteBook(@ShellOption long id) {
         Book book = libraryService.deleteBook(id);
-        System.out.println("Книга удалена: " + book);
+        System.out.printf("Книга удалена: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName());
     }
 
     @ShellMethod(value = "create book", key = {"create-book", "cb"})
@@ -40,7 +43,7 @@ public class GameCommand {
                            @ShellOption long idAuthor,
                            @ShellOption long idJenre) {
         Book book = libraryService.createBook(title, idAuthor, idJenre);
-        System.out.println("Добавлена новая книга: " + book);
+        System.out.printf("Добавлена новая книга: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName());
     }
 
     @ShellMethod(value = "create author", key = {"create-author", "ca"})
@@ -48,12 +51,12 @@ public class GameCommand {
                              @ShellOption String surname,
                              @ShellOption String patronymic) {
         Author author = libraryService.createAuthor(name, surname, patronymic);
-        System.out.println("Добавлен новый автор: " + author);
+        System.out.println("Добавлен новый автор: " + author.getFullName());
     }
 
     @ShellMethod(value = "create jenre", key = {"create-jenre", "cj"})
     public void createAuthor(@ShellOption String name) {
         Jenre jenre = libraryService.createJenre(name);
-        System.out.println("Добавлен новый ;fyh: " + jenre);
+        System.out.println("Добавлен новый жанр: " + jenre.getType());
     }
 }
