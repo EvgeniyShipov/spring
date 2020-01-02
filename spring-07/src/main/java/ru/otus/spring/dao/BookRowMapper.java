@@ -16,9 +16,9 @@ public class BookRowMapper implements RowMapper<Book> {
                 .setTitle(resultSet.getString("title"))
                 .setAuthor(new Author()
                         .setId(resultSet.getLong("id_author"))
-                        .setName(resultSet.getString("title"))
-                        .setSurname(resultSet.getString("title"))
-                        .setPatronymic(resultSet.getString("title")))
+                        .setName(resultSet.getString("name"))
+                        .setSurname(resultSet.getString("surname"))
+                        .setPatronymic(resultSet.getString("patronymic")))
                 .setJenre(new Jenre()
                         .setId(resultSet.getLong("id_jenre"))
                         .setType(resultSet.getString("type")));
