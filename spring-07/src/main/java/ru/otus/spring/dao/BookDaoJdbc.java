@@ -24,7 +24,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public List<Book> getByAuthor(Author author) {
-        return jdbc.query("select * from BOOKS B inner join JENRE J on B.ID_JENRE = J.ID where ID_AUTHOR = ? ",
+        return jdbc.query("select * from BOOKS B, AUTHORS A inner join JENRE J on B.ID_JENRE = J.ID where A.ID = ? ",
                 rowMapper, author.getId());
     }
 
