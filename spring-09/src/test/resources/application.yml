@@ -1,11 +1,18 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
-    username: sa
-    password: password
-    driver-class-name: org.h2.Driver
-    schema: schema.sql
+    initialization-mode: always
     data: data.sql
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+    properties:
+      hibernate:
+      #format_sql: true
 
   shell:
     interactive:
