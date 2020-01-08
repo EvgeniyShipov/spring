@@ -7,7 +7,6 @@ import ru.otus.spring.domain.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class BookRepositoryJpa implements BookRepository {
         TypedQuery<Book> query = em.createQuery("from Book b " +
                 "join fetch b.author " +
                 "join fetch b.jenre " +
-                "join fetch b.comments " +
                 "where b.author.id = :id_author", Book.class);
         query.setParameter("id_author", author.getId());
 
@@ -39,8 +37,7 @@ public class BookRepositoryJpa implements BookRepository {
     public List<Book> getAll() {
         return em.createQuery("from Book b " +
                 "join fetch b.author " +
-                "join fetch b.jenre " +
-                "join fetch b.comments", Book.class).getResultList();
+                "join fetch b.jenre ", Book.class).getResultList();
     }
 
     @Override

@@ -33,9 +33,15 @@ public class GameCommand {
                 System.out.println(jenre.getType()));
     }
 
-    @ShellMethod(value = "get all comment", key = {"get-all-comment", "gac"})
-    public void getAllComments(@ShellOption long idBook) {
-        libraryService.getAllComments(idBook).forEach(comment ->
+    @ShellMethod(value = "get comments", key = {"get-comment", "gc"})
+    public void getComments(@ShellOption long idBook) {
+        libraryService.getCommentsByBookId(idBook).forEach(comment ->
+                System.out.println(comment.getMessage()));
+    }
+
+    @ShellMethod(value = "get all comments", key = {"get-all-comment", "gac"})
+    public void getAllComments() {
+        libraryService.getAllComments().forEach(comment ->
                 System.out.println(comment.getMessage()));
     }
 

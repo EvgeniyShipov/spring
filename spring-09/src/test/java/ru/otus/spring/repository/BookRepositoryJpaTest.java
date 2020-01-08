@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Jenre;
 
 import java.util.List;
@@ -20,43 +19,39 @@ class BookRepositoryJpaTest {
     private static final int AUTHOR_ID = 1;
     private static final int JENRE_ID = 1;
     private static final int BOOK_ID = 1;
-    private static final int COMMENT_ID = 1;
 
     @Autowired
-    private BookRepository repositoryJpa;
+    private BookRepository bookRepository;
 
     @Test
     void getById() {
-        Book book = repositoryJpa.getById(BOOK_ID);
+        Book book = bookRepository.getById(BOOK_ID);
 
         assertThat(book).isNotNull();
         assertThat(book.getTitle()).isEqualTo(BOOK_TITLE);
         assertThat(book.getAuthor().getId()).isEqualTo(AUTHOR_ID);
         assertThat(book.getJenre().getId()).isEqualTo(JENRE_ID);
-        assertThat(book.getComments().get(0).getId()).isEqualTo(COMMENT_ID);
     }
 
     @Test
     void getByAuthor() {
         Author author = new Author().setId(AUTHOR_ID);
-        List<Book> books = repositoryJpa.getByAuthor(author);
+        List<Book> books = bookRepository.getByAuthor(author);
 
         assertThat(books).isNotNull();
         assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
         assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
         assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
-        assertThat(books.get(0).getComments().get(0).getId()).isEqualTo(COMMENT_ID);
     }
 
     @Test
     void getAll() {
-        List<Book> books = repositoryJpa.getAll();
+        List<Book> books = bookRepository.getAll();
 
         assertThat(books).isNotNull();
         assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
         assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
         assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
-        assertThat(books.get(0).getComments().get(0).getId()).isEqualTo(COMMENT_ID);
     }
 
     @Test
@@ -72,7 +67,7 @@ class BookRepositoryJpaTest {
                 .setAuthor(author)
                 .setJenre(jenre);
 
-        Book result = repositoryJpa.create(book);
+        Book result = bookRepository.create(book);
 
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getAuthor().getId()).isEqualTo(author.getId());
@@ -80,24 +75,15 @@ class BookRepositoryJpaTest {
     }
 
     @Test
-    void deleteById() {
-        Book book = repositoryJpa.getById(BOOK_ID);
-        repositoryJpa.delete(book);
-        List<Book> books = repositoryJpa.getAll();
-
-        assertThat(books).isEmpty();
-    }
-
-    @Test
     void update() {
         Jenre jenre = new Jenre().setId(2).setType("drama");
 
-        Book book = repositoryJpa.getById(BOOK_ID);
+        Book book = bookRepository.getById(BOOK_ID);
         book.setJenre(jenre);
 
-        repositoryJpa.update(book);
+        bookRepository.update(book);
 
-        Book resultBook = repositoryJpa.getById(BOOK_ID);
+        Book resultBook = bookRepository.getById(BOOK_ID);
 
         assertThat(resultBook.getJenre().getId()).isEqualTo(jenre.getId());
     }

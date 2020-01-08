@@ -8,27 +8,34 @@ import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Jenre;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.JenreRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class LibraryServiceTest {
+
+    private static final int BOOK_ID = 1;
+
     private LibraryService libraryService;
     private BookRepository bookRepository;
     private AuthorRepository authorRepository;
     private JenreRepository jenreRepository;
+    private CommentRepository commentRepository;
 
     @BeforeEach
     void setUp() {
         bookRepository = mock(BookRepository.class);
         authorRepository = mock(AuthorRepository.class);
         jenreRepository = mock(JenreRepository.class);
-        libraryService = new SimpleLibraryService(bookRepository, authorRepository, jenreRepository);
+        commentRepository = mock(CommentRepository.class);
+        libraryService = new SimpleLibraryService(bookRepository, authorRepository, jenreRepository, commentRepository);
     }
 
     @Test
@@ -40,20 +47,29 @@ class LibraryServiceTest {
 
         assertThat(allBooks).isNotNull();
         assertThat(allBooks).isEqualTo(books);
+
         verify(bookRepository).getAll();
         verifyNoMoreInteractions(bookRepository);
     }
 
     @Test
     void getAllComments() {
-        int bookId = 1;
-
         Comment comment = new Comment().setMessage("comment");
-        Book book = new Book();
-        book.addComment(comment);
-        when(bookRepository.getById(bookId)).thenReturn(book);
 
-        List<Comment> comments = libraryService.getAllComments(bookId);
+        when(commentRepository.getAll()).thenReturn(Collections.singletonList(comment));
+
+        List<Comment> resultComments = libraryService.getAllComments();
+
+        assertThat(resultComments).isNotNull();
+        assertThat(resultComments).containsOnly(comment);
+    }
+
+    @Test
+    void getCommentsByBookId() {
+        Comment comment = new Comment().setMessage("comment");
+        when(commentRepository.getByBookId(BOOK_ID)).thenReturn(Collections.singletonList(comment));
+
+        List<Comment> comments = libraryService.getCommentsByBookId(BOOK_ID);
 
         assertThat(comments).isNotNull();
         assertThat(comments).containsOnly(comment);
@@ -61,15 +77,14 @@ class LibraryServiceTest {
 
     @Test
     void getBook() {
-        int bookId = 1;
         Book book = new Book();
-        when(bookRepository.getById(bookId)).thenReturn(book);
+        when(bookRepository.getById(BOOK_ID)).thenReturn(book);
 
-        Book resultBook = libraryService.getBook(bookId);
+        Book resultBook = libraryService.getBook(BOOK_ID);
 
         assertThat(resultBook).isNotNull();
         assertThat(resultBook).isEqualTo(book);
-        verify(bookRepository).getById(bookId);
+        verify(bookRepository).getById(BOOK_ID);
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -101,20 +116,24 @@ class LibraryServiceTest {
 
     @Test
     void deleteBook() {
-        int bookId = 1;
         Book book = new Book()
-                .setId(bookId);
+                .setId(BOOK_ID);
 
-        when(bookRepository.getById(bookId)).thenReturn(book);
+        Comment comment = new Comment().setMessage("test message");
+        when(commentRepository.getByBookId(BOOK_ID)).thenReturn(Collections.singletonList(comment));
+        when(bookRepository.getById(BOOK_ID)).thenReturn(book);
 
-        Book resultBook = libraryService.deleteBook(bookId);
+        Book resultBook = libraryService.deleteBook(BOOK_ID);
 
         assertThat(resultBook).isNotNull();
-        assertThat(resultBook.getId()).isEqualTo(bookId);
+        assertThat(resultBook.getId()).isEqualTo(BOOK_ID);
 
-        verify(bookRepository).getById(bookId);
+        verify(commentRepository).getByBookId(BOOK_ID);
+        verify(commentRepository).delete(comment);
+        verify(bookRepository).getById(BOOK_ID);
         verify(bookRepository).delete(book);
 
+        verifyNoMoreInteractions(commentRepository);
         verifyNoMoreInteractions(bookRepository);
         verifyNoMoreInteractions(authorRepository);
     }
@@ -179,22 +198,16 @@ class LibraryServiceTest {
 
     @Test
     void createComment() {
-        int bookId = 1;
         Book book = new Book()
-                .setId(bookId);
+                .setId(BOOK_ID);
 
-        when(bookRepository.getById(bookId)).thenReturn(book);
+        when(bookRepository.getById(BOOK_ID)).thenReturn(book);
 
         String message = "test message";
 
-        Comment result = libraryService.createComment(message, bookId);
+        Comment result = libraryService.createComment(message, BOOK_ID);
 
         assertThat(result).isNotNull();
         assertThat(result.getMessage()).isEqualTo(message);
-
-        Book resultBook = bookRepository.getById(bookId);
-
-        assertThat(resultBook.getComments()).isNotNull();
-        assertThat(resultBook.getComments()).containsOnly(result);
     }
 }

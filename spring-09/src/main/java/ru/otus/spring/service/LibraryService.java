@@ -17,7 +17,9 @@ public interface LibraryService {
 
     List<Jenre> getAllJenre();
 
-    List<Comment> getAllComments(long idBook);
+    List<Comment> getAllComments();
+
+    List<Comment> getCommentsByBookId(long idBook);
 
     Book deleteBook(long id);
 

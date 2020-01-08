@@ -51,6 +51,8 @@ class AuthorRepositoryJpaTest {
 
         Author result = authorRepository.create(author);
 
-        assertThat(result).isEqualToIgnoringGivenFields(author, "id");
+        Author authorFromBase = authorRepository.getById(result.getId());
+
+        assertThat(authorFromBase).isEqualTo(result);
     }
 }
