@@ -3,6 +3,7 @@ package ru.otus.spring.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -15,43 +16,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
-    private static final String BOOK_TITLE = "The Winter of Our Discontent";
-    private static final int AUTHOR_ID = 1;
-    private static final int JENRE_ID = 1;
-    private static final int BOOK_ID = 1;
+    private static final long AUTHOR_ID = 1;
+    private static final long JENRE_ID = 1;
+    private static final long BOOK_ID = 1;
 
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
     void getById() {
-        Book book = bookRepository.getById(BOOK_ID);
+        Book actualBook = bookRepository.getById(BOOK_ID);
 
-        assertThat(book).isNotNull();
-        assertThat(book.getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(book.getAuthor().getId()).isEqualTo(AUTHOR_ID);
-        assertThat(book.getJenre().getId()).isEqualTo(JENRE_ID);
+        Book expectedBook = entityManager.find(Book.class, actualBook.getId());
+
+        assertThat(expectedBook).isEqualTo(actualBook);
     }
 
     @Test
     void getByAuthor() {
         Author author = new Author().setId(AUTHOR_ID);
-        List<Book> books = bookRepository.getByAuthor(author);
 
-        assertThat(books).isNotNull();
-        assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
-        assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
+        List<Book> actualBooks = bookRepository.getByAuthor(author);
+
+        Book expectedBook = entityManager.find(Book.class, actualBooks.get(0).getId());
+
+        assertThat(expectedBook).isEqualTo(actualBooks.get(0));
     }
 
     @Test
     void getAll() {
-        List<Book> books = bookRepository.getAll();
+        List<Book> actualBooks = bookRepository.getAll();
 
-        assertThat(books).isNotNull();
-        assertThat(books.get(0).getTitle()).isEqualTo(BOOK_TITLE);
-        assertThat(books.get(0).getAuthor().getId()).isEqualTo(AUTHOR_ID);
-        assertThat(books.get(0).getJenre().getId()).isEqualTo(JENRE_ID);
+        Book expectedBook = entityManager.find(Book.class, actualBooks.get(0).getId());
+
+        assertThat(expectedBook).isEqualTo(actualBooks.get(0));
     }
 
     @Test
@@ -63,28 +64,31 @@ class BookRepositoryJpaTest {
                 .setId(JENRE_ID)
                 .setType("horror");
         Book book = new Book()
+                .setId(1L)
                 .setTitle(title)
                 .setAuthor(author)
                 .setJenre(jenre);
 
-        Book result = bookRepository.create(book);
+        Book actualBook = bookRepository.create(book);
 
-        assertThat(result.getTitle()).isEqualTo(title);
-        assertThat(result.getAuthor().getId()).isEqualTo(author.getId());
-        assertThat(result.getJenre().getId()).isEqualTo(jenre.getId());
+        Book expectedBook = entityManager.find(Book.class, actualBook.getId());
+
+        assertThat(expectedBook).isEqualTo(actualBook);
     }
 
     @Test
     void update() {
-        Jenre jenre = new Jenre().setId(2).setType("drama");
+        Book oldBook = entityManager.find(Book.class, BOOK_ID);
+        Jenre oldJenre = oldBook.getJenre();
 
-        Book book = bookRepository.getById(BOOK_ID);
-        book.setJenre(jenre);
+        Jenre newJenre = new Jenre().setId(2).setType("drama");
+        oldBook.setJenre(newJenre);
 
-        bookRepository.update(book);
+        bookRepository.update(oldBook);
 
-        Book resultBook = bookRepository.getById(BOOK_ID);
+        Book newBook = entityManager.find(Book.class, oldBook.getId());
 
-        assertThat(resultBook.getJenre().getId()).isEqualTo(jenre.getId());
+        assertThat(newBook.getJenre()).isEqualTo(newJenre);
+        assertThat(newBook.getJenre()).isNotEqualTo(oldJenre);
     }
 }

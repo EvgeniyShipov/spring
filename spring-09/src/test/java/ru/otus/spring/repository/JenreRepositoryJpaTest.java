@@ -3,6 +3,7 @@ package ru.otus.spring.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Jenre;
 
@@ -13,28 +14,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(JenreRepositoryJpa.class)
 class JenreRepositoryJpaTest {
+    private static final int JENRE_ID = 1;
 
     @Autowired
     private JenreRepository jenreRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
     void getAll() {
-        List<Jenre> jenres = jenreRepository.getAll();
+        List<Jenre> actualJenres = jenreRepository.getAll();
 
-        assertThat(jenres).isNotNull();
-        assertThat(jenres.get(0).getType()).isEqualTo("COMEDY");
-        assertThat(jenres.get(1).getType()).isEqualTo("TRAGEDY");
-        assertThat(jenres.get(2).getType()).isEqualTo("DRAMA");
-        assertThat(jenres.get(3).getType()).isEqualTo("HORROR");
+        Jenre expectedJenre = entityManager.find(Jenre.class, actualJenres.get(0).getId());
+        assertThat(expectedJenre).isEqualTo(actualJenres.get(0));
+
+        expectedJenre = entityManager.find(Jenre.class, actualJenres.get(1).getId());
+        assertThat(expectedJenre).isEqualTo(actualJenres.get(1));
+
+        expectedJenre = entityManager.find(Jenre.class, actualJenres.get(2).getId());
+        assertThat(expectedJenre).isEqualTo(actualJenres.get(2));
+
+        expectedJenre = entityManager.find(Jenre.class, actualJenres.get(3).getId());
+        assertThat(expectedJenre).isEqualTo(actualJenres.get(3));
     }
 
     @Test
     void getById() {
-        int id = 1;
-        Jenre jenre = jenreRepository.getById(id);
+        Jenre actualJenre = jenreRepository.getById(JENRE_ID);
+        Jenre expectedJenre = entityManager.find(Jenre.class, actualJenre.getId());
 
-        assertThat(jenre).isNotNull();
-        assertThat(jenre.getType()).isEqualTo("COMEDY");
+        assertThat(expectedJenre).isEqualTo(actualJenre);
     }
 
     @Test
@@ -43,8 +53,9 @@ class JenreRepositoryJpaTest {
         Jenre jenre = new Jenre()
                 .setType(type);
 
-        Jenre result = jenreRepository.create(jenre);
+        Jenre actualJenre = jenreRepository.create(jenre);
+        Jenre expectedJenre = entityManager.find(Jenre.class, actualJenre.getId());
 
-        assertThat(result.getType()).isEqualTo(type);
+        assertThat(expectedJenre).isEqualTo(actualJenre);
     }
 }

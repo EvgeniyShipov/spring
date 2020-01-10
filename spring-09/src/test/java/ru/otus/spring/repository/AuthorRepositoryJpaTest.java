@@ -3,6 +3,7 @@ package ru.otus.spring.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Author;
 
@@ -13,30 +14,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(AuthorRepositoryJpa.class)
 class AuthorRepositoryJpaTest {
+    private static final int AUTHOR_ID = 1;
 
     @Autowired
     private AuthorRepository authorRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
     void getById() {
-        int id = 1;
-        Author author = authorRepository.getById(id);
+        Author actualAuthor = authorRepository.getById(AUTHOR_ID);
+        Author expectedAuthor = entityManager.find(Author.class, actualAuthor.getId());
 
-        assertThat(author).isNotNull();
-        assertThat(author.getName()).isEqualTo("John");
-        assertThat(author.getSurname()).isEqualTo("Steinbeck");
-        assertThat(author.getPatronymic()).isEqualTo("Ernst");
+        assertThat(expectedAuthor).isEqualTo(actualAuthor);
     }
 
     @Test
     void getAll() {
-        List<Author> authors = authorRepository.getAll();
+        List<Author> actualAuthors = authorRepository.getAll();
+        Author expectedAuthor = entityManager.find(Author.class, actualAuthors.get(0).getId());
 
-        assertThat(authors).isNotNull();
-        assertThat(authors.get(0)).isNotNull();
-        assertThat(authors.get(0).getName()).isEqualTo("John");
-        assertThat(authors.get(0).getSurname()).isEqualTo("Steinbeck");
-        assertThat(authors.get(0).getPatronymic()).isEqualTo("Ernst");
+        assertThat(actualAuthors).isNotNull();
+        assertThat(expectedAuthor).isEqualTo(actualAuthors.get(0));
     }
 
     @Test
@@ -49,10 +49,9 @@ class AuthorRepositoryJpaTest {
                 .setSurname(surname)
                 .setPatronymic(patronymic);
 
-        Author result = authorRepository.create(author);
+        Author actualAuthor = authorRepository.create(author);
+        Author expectedAuthor = entityManager.find(Author.class, actualAuthor.getId());
 
-        Author authorFromBase = authorRepository.getById(result.getId());
-
-        assertThat(authorFromBase).isEqualTo(result);
+        assertThat(expectedAuthor).isEqualTo(actualAuthor);
     }
 }

@@ -3,6 +3,7 @@ package ru.otus.spring.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Comment;
 
@@ -13,53 +14,55 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(CommentRepositoryJpa.class)
 class CommentRepositoryJpaTest {
-    private static final int BOOK_ID = 1;
-    private static final int COMMENT_ID = 1;
+    private static final long BOOK_ID = 1;
+    private static final long COMMENT_ID = 1;
 
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
     void getById() {
-        Comment comment = commentRepository.getById(COMMENT_ID);
+        Comment actualComment = commentRepository.getById(COMMENT_ID);
+        Comment expectedComment = entityManager.find(Comment.class, actualComment.getId());
 
-        assertThat(comment).isNotNull();
-        assertThat(comment.getId()).isEqualTo(COMMENT_ID);
+        assertThat(expectedComment).isEqualTo(actualComment);
     }
 
     @Test
     void getByBookId() {
-        List<Comment> comments = commentRepository.getByBookId(BOOK_ID);
+        List<Comment> actualComments = commentRepository.getByBookId(BOOK_ID);
+        Comment expectedComment = entityManager.find(Comment.class, actualComments.get(0).getId());
 
-        assertThat(comments).isNotNull();
-        assertThat(comments.get(0).getId()).isEqualTo(COMMENT_ID);
+        assertThat(actualComments).isNotNull();
+        assertThat(expectedComment).isEqualTo(actualComments.get(0));
     }
 
     @Test
     void getAll() {
-        List<Comment> comments = commentRepository.getAll();
+        List<Comment> actualComments = commentRepository.getAll();
+        Comment expectedComment = entityManager.find(Comment.class, actualComments.get(0).getId());
 
-        assertThat(comments).isNotNull();
-        assertThat(comments.get(0).getId()).isEqualTo(COMMENT_ID);
+        assertThat(actualComments).isNotNull();
+        assertThat(expectedComment).isEqualTo(actualComments.get(0));
     }
 
     @Test
     void delete() {
-        Comment comment = commentRepository.getById(COMMENT_ID);
-
+        Comment comment = entityManager.find(Comment.class, COMMENT_ID);
         commentRepository.delete(comment);
+        Comment expectedComment = entityManager.find(Comment.class, comment.getId());
 
-        Comment result = commentRepository.getById(COMMENT_ID);
-
-        assertThat(result).isNull();
+        assertThat(expectedComment).isNull();
     }
 
     @Test
     void create() {
-        Comment comment = commentRepository.create(new Comment().setMessage("test message"));
+        Comment actualComment = commentRepository.create(new Comment().setMessage("test message"));
+        Comment expectedComment = entityManager.find(Comment.class, actualComment.getId());
 
-        Comment resultComment = commentRepository.getById(comment.getId());
-
-        assertThat(resultComment).isEqualTo(comment);
+        assertThat(expectedComment).isEqualTo(actualComment);
     }
 }
