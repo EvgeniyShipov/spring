@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Jenre;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,6 +30,17 @@ public class BookRepositoryJpa implements BookRepository {
                 "join fetch b.jenre " +
                 "where b.author.id = :id_author", Book.class);
         query.setParameter("id_author", author.getId());
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Book> getByJenre(Jenre jenre) {
+        TypedQuery<Book> query = em.createQuery("from Book b " +
+                "join fetch b.author " +
+                "join fetch b.jenre " +
+                "where b.jenre.id = :id_jenre", Book.class);
+        query.setParameter("id_jenre", jenre.getId());
 
         return query.getResultList();
     }

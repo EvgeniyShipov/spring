@@ -26,7 +26,7 @@ public class Book {
     @JoinColumn(name = "id_author")
     private Author author;
 
-    @OneToOne
+    @ManyToOne(cascade = ALL, fetch = EAGER)
     @JoinColumn(name = "id_jenre")
     private Jenre jenre;
 }

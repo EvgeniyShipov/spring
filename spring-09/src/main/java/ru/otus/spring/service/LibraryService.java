@@ -13,7 +13,11 @@ public interface LibraryService {
 
     Book getBook(long id);
 
+    List<Book> getBookByAuthor(long idAuthor);
+
     List<Author> getAllAuthors();
+
+    List<Book> getBookByJenre(long idJenre);
 
     List<Jenre> getAllJenre();
 

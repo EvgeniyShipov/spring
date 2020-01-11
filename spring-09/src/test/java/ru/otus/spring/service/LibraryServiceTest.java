@@ -22,6 +22,8 @@ import static org.mockito.Mockito.*;
 class LibraryServiceTest {
 
     private static final int BOOK_ID = 1;
+    private static final int AUTHOR_ID = 1;
+    private static final int JENRE_ID = 1;
 
     private LibraryService libraryService;
     private BookRepository bookRepository;
@@ -112,6 +114,32 @@ class LibraryServiceTest {
         assertThat(resultJenre).isEqualTo(jenres);
         verify(jenreRepository).getAll();
         verifyNoMoreInteractions(jenreRepository);
+    }
+
+    @Test
+    void getBookByAuthor() {
+        Author author = new Author().setName("name").setSurname("surname");
+        when(authorRepository.getById(AUTHOR_ID)).thenReturn(author);
+
+        ArrayList<Book> books = new ArrayList<>();
+        when(bookRepository.getByAuthor(author)).thenReturn(books);
+
+        List<Book> resultBooks = libraryService.getBookByAuthor(AUTHOR_ID);
+
+        assertThat(resultBooks).isEqualTo(books);
+    }
+
+    @Test
+    void getBookByJenre() {
+        Jenre jenre = new Jenre().setType("jenre");
+        when(jenreRepository.getById(JENRE_ID)).thenReturn(jenre);
+
+        ArrayList<Book> books = new ArrayList<>();
+        when(bookRepository.getByJenre(jenre)).thenReturn(books);
+
+        List<Book> resultBooks = libraryService.getBookByJenre(JENRE_ID);
+
+        assertThat(resultBooks).isEqualTo(books);
     }
 
     @Test

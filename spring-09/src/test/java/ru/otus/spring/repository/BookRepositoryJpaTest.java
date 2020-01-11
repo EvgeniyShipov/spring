@@ -47,6 +47,16 @@ class BookRepositoryJpaTest {
     }
 
     @Test
+    void getByJenre() {
+        Jenre jenre = new Jenre().setId(JENRE_ID);
+
+        List<Book> actualBooks = bookRepository.getByJenre(jenre);
+
+        Book expectedBook = entityManager.find(Book.class, actualBooks.get(0).getId());
+        assertThat(expectedBook).isEqualTo(actualBooks.get(0));
+    }
+
+    @Test
     void getAll() {
         List<Book> actualBooks = bookRepository.getAll();
 

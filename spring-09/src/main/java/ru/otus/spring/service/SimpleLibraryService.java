@@ -30,8 +30,20 @@ public class SimpleLibraryService implements LibraryService {
         return bookRepository.getById(id);
     }
 
+    @Override
+    public List<Book> getBookByAuthor(long idAuthor) {
+        Author author = authorRepository.getById(idAuthor);
+        return bookRepository.getByAuthor(author);
+    }
+
     public List<Author> getAllAuthors() {
         return authorRepository.getAll();
+    }
+
+    @Override
+    public List<Book> getBookByJenre(long idJenre) {
+        Jenre jenre = jenreRepository.getById(idJenre);
+        return bookRepository.getByJenre(jenre);
     }
 
     public List<Jenre> getAllJenre() {
@@ -56,6 +68,7 @@ public class SimpleLibraryService implements LibraryService {
         return book;
     }
 
+    @Transactional
     public Book createBook(String title, long idAuthor, long idJenre) {
         Book book = new Book()
                 .setTitle(title)

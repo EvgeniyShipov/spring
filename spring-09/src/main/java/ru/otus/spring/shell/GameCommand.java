@@ -33,6 +33,18 @@ public class GameCommand {
                 System.out.println(jenre.getType()));
     }
 
+    @ShellMethod(value = "get book by author", key = {"get-book-author", "gba"})
+    public void getBookByAuthor(@ShellOption long idAuthor) {
+        libraryService.getBookByAuthor(idAuthor).forEach(book ->
+                System.out.printf("%s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
+    }
+
+    @ShellMethod(value = "get book by jenre", key = {"get-book-jenre", "gbj"})
+    public void getBookByJenre(@ShellOption long idJenre) {
+        libraryService.getBookByJenre(idJenre).forEach(book ->
+                System.out.printf("%s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
+    }
+
     @ShellMethod(value = "get comments", key = {"get-comment", "gc"})
     public void getComments(@ShellOption long idBook) {
         libraryService.getCommentsByBookId(idBook).forEach(comment ->
@@ -68,7 +80,7 @@ public class GameCommand {
     }
 
     @ShellMethod(value = "create jenre", key = {"create-jenre", "cj"})
-    public void createAuthor(@ShellOption String name) {
+    public void createJenre(@ShellOption String name) {
         Jenre jenre = libraryService.createJenre(name);
         System.out.println("Добавлен новый жанр: " + jenre.getType());
     }
