@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -22,7 +21,7 @@ public class Comment {
     @Column(name = "message", nullable = false)
     private String message;
 
-    @ManyToOne(cascade = ALL, fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "id_book")
     private Book book;
 }

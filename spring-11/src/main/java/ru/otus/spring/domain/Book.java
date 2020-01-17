@@ -6,7 +6,6 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 
 import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
@@ -22,11 +21,11 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne(cascade = ALL, fetch = EAGER)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "id_author")
     private Author author;
 
-    @ManyToOne(cascade = ALL, fetch = EAGER)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "id_jenre")
     private Jenre jenre;
 }
