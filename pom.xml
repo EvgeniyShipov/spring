@@ -17,6 +17,7 @@
         <module>spring-05</module>
         <module>spring-07</module>
         <module>spring-09</module>
+        <module>spring-11</module>
     </modules>
 
 </project>
