@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      database: library
+
+  shell:
+    interactive:
+      enabled: false

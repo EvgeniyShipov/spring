@@ -1,10 +1,10 @@
-package ru.otus.spring13;
+package ru.otus.spring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Spring13ApplicationTests {
+class SpringApplicationTests {
 
     @Test
     void contextLoads() {
