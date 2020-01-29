@@ -39,7 +39,7 @@ class LibraryServiceTest {
 
     @Test
     void getAllBooks() {
-        ArrayList<Book> books = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
         when(bookRepository.findAll()).thenReturn(books);
 
         List<Book> allBooks = libraryService.getAllBooks();
@@ -89,7 +89,7 @@ class LibraryServiceTest {
 
     @Test
     void getAllAuthors() {
-        ArrayList<Author> authors = new ArrayList<>();
+        List<Author> authors = new ArrayList<>();
         when(authorRepository.findAll()).thenReturn(authors);
 
         List<Author> resultAuthors = libraryService.getAllAuthors();
@@ -118,7 +118,7 @@ class LibraryServiceTest {
         Author author = new Author().setName("name").setSurname("surname");
         when(authorRepository.findById(AUTHOR_ID)).thenReturn(Optional.of(author));
 
-        ArrayList<Book> books = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
         when(bookRepository.findByAuthor(author)).thenReturn(books);
 
         List<Book> resultBooks = libraryService.getBookByAuthor(AUTHOR_ID);
@@ -131,7 +131,7 @@ class LibraryServiceTest {
         Jenre jenre = new Jenre().setType("jenre");
         when(jenreRepository.findById(JENRE_ID)).thenReturn(Optional.of(jenre));
 
-        ArrayList<Book> books = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
         when(bookRepository.findByJenre(jenre)).thenReturn(books);
 
         List<Book> resultBooks = libraryService.getBookByJenre(JENRE_ID);
@@ -153,8 +153,7 @@ class LibraryServiceTest {
         assertThat(resultBook).isNotNull();
         assertThat(resultBook.getId()).isEqualTo((BOOK_ID));
 
-        verify(commentRepository).findByBookId(BOOK_ID);
-        verify(commentRepository).delete(comment);
+        verify(commentRepository).deleteAllByBookId(BOOK_ID);
         verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository).delete(book);
 

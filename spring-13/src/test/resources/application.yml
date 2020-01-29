@@ -1,6 +1,7 @@
 spring:
   data:
     mongodb:
+      port: 0
       database: library
 
   shell:

@@ -63,8 +63,7 @@ public class SimpleLibraryService implements LibraryService {
 
     @Transactional
     public Book deleteBook(String id) {
-        commentRepository.findByBookId(id)
-                .forEach(commentRepository::delete);
+        commentRepository.deleteAllByBookId(id);
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("Книга не найдена"));
