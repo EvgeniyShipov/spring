@@ -3,7 +3,3 @@ spring:
     mongodb:
       port: 0
       database: library
-
-  shell:
-    interactive:
-      enabled: false

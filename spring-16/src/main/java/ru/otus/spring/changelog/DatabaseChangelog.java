@@ -4,10 +4,10 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Comment;
-import ru.otus.spring.domain.Jenre;
+import ru.otus.spring.domain.author.Author;
+import ru.otus.spring.domain.book.Book;
+import ru.otus.spring.domain.comment.Comment;
+import ru.otus.spring.domain.jenre.Jenre;
 
 @ChangeLog(order = "001")
 public class DatabaseChangelog {

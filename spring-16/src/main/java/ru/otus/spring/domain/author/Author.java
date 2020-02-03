@@ -1,4 +1,4 @@
-package ru.otus.spring.domain;
+package ru.otus.spring.domain.author;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

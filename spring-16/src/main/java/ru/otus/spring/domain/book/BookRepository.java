@@ -1,10 +1,9 @@
-package ru.otus.spring.repository;
+package ru.otus.spring.domain.book;
 
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Jenre;
+import ru.otus.spring.domain.author.Author;
+import ru.otus.spring.domain.jenre.Jenre;
 
 import java.util.List;
 import java.util.Optional;

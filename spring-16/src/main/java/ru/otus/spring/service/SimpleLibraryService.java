@@ -3,14 +3,14 @@ package ru.otus.spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Comment;
-import ru.otus.spring.domain.Jenre;
-import ru.otus.spring.repository.AuthorRepository;
-import ru.otus.spring.repository.BookRepository;
-import ru.otus.spring.repository.CommentRepository;
-import ru.otus.spring.repository.JenreRepository;
+import ru.otus.spring.domain.author.Author;
+import ru.otus.spring.domain.author.AuthorRepository;
+import ru.otus.spring.domain.book.Book;
+import ru.otus.spring.domain.book.BookRepository;
+import ru.otus.spring.domain.comment.Comment;
+import ru.otus.spring.domain.comment.CommentRepository;
+import ru.otus.spring.domain.jenre.Jenre;
+import ru.otus.spring.domain.jenre.JenreRepository;
 
 import java.util.List;
 
@@ -33,8 +33,7 @@ public class SimpleLibraryService implements LibraryService {
 
     @Override
     public List<Book> getBookByAuthor(String idAuthor) {
-        Author author = authorRepository.findById(idAuthor)
-                .orElseThrow(() -> new NullPointerException("Автор не найден"));
+        Author author = getAuthor(idAuthor);
         return bookRepository.findByAuthor(author);
     }
 
@@ -44,8 +43,7 @@ public class SimpleLibraryService implements LibraryService {
 
     @Override
     public List<Book> getBookByJenre(String idJenre) {
-        Jenre jenre = jenreRepository.findById(idJenre)
-                .orElseThrow(() -> new NullPointerException("Жанр не найден"));
+        Jenre jenre = getJenre(idJenre);
         return bookRepository.findByJenre(jenre);
     }
 
@@ -64,9 +62,7 @@ public class SimpleLibraryService implements LibraryService {
     @Transactional
     public Book deleteBook(String id) {
         commentRepository.deleteAllByBookId(id);
-
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("Книга не найдена"));
+        Book book = getBook(id);
         bookRepository.delete(book);
         return book;
     }
@@ -75,10 +71,8 @@ public class SimpleLibraryService implements LibraryService {
     public Book createBook(String title, String idAuthor, String idJenre) {
         Book book = new Book()
                 .setTitle(title)
-                .setAuthor(authorRepository.findById(idAuthor)
-                        .orElseThrow(() -> new NullPointerException("Автор не найден")))
-                .setJenre(jenreRepository.findById(idJenre)
-                        .orElseThrow(() -> new NullPointerException("Жанр не найден")));
+                .setAuthor(getAuthor(idAuthor))
+                .setJenre(getJenre(idJenre));
         bookRepository.save(book);
         return book;
     }
@@ -98,12 +92,50 @@ public class SimpleLibraryService implements LibraryService {
 
     @Transactional
     public Comment createComment(String message, String idBook) {
-        Book book = bookRepository.findById(idBook)
-                .orElseThrow(() -> new NullPointerException("Книга не найдена"));
+        Book book = getBook(idBook);
         Comment comment = new Comment()
                 .setMessage(message)
                 .setBook(book);
         commentRepository.save(comment);
         return comment;
+    }
+
+    @Override
+    public Author getAuthor(String id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new NullPointerException("Автор не найден"));
+    }
+
+    @Override
+    public Jenre getJenre(String id) {
+        return jenreRepository.findById(id)
+                .orElseThrow(() -> new NullPointerException("Жанр не найден"));
+    }
+
+    @Override
+    public Jenre deleteJenre(String id) {
+        Jenre jenre = getJenre(id);
+        jenreRepository.delete(jenre);
+        return jenre;
+    }
+
+    @Override
+    public Comment getComment(String id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new NullPointerException("Жанр не найден"));
+    }
+
+    @Override
+    public Comment deleteComment(String id) {
+        Comment comment = getComment(id);
+        commentRepository.delete(comment);
+        return comment;
+    }
+
+    @Override
+    public Author deleteAuthor(String id) {
+        Author author = getAuthor(id);
+        authorRepository.delete(author);
+        return author;
     }
 }

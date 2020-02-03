@@ -2,14 +2,14 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Comment;
-import ru.otus.spring.domain.Jenre;
-import ru.otus.spring.repository.AuthorRepository;
-import ru.otus.spring.repository.BookRepository;
-import ru.otus.spring.repository.CommentRepository;
-import ru.otus.spring.repository.JenreRepository;
+import ru.otus.spring.domain.author.Author;
+import ru.otus.spring.domain.author.AuthorRepository;
+import ru.otus.spring.domain.book.Book;
+import ru.otus.spring.domain.book.BookRepository;
+import ru.otus.spring.domain.comment.Comment;
+import ru.otus.spring.domain.comment.CommentRepository;
+import ru.otus.spring.domain.jenre.Jenre;
+import ru.otus.spring.domain.jenre.JenreRepository;
 
 import java.util.*;
 

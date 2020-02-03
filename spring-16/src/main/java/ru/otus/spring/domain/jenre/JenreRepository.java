@@ -1,7 +1,6 @@
-package ru.otus.spring.repository;
+package ru.otus.spring.domain.jenre;
 
 import org.springframework.data.repository.CrudRepository;
-import ru.otus.spring.domain.Jenre;
 
 import java.util.Optional;
 

@@ -1,7 +1,6 @@
-package ru.otus.spring.repository;
+package ru.otus.spring.domain.author;
 
 import org.springframework.data.repository.CrudRepository;
-import ru.otus.spring.domain.Author;
 
 import java.util.Optional;
 
