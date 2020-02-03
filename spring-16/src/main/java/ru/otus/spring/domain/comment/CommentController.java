@@ -27,7 +27,7 @@ public class CommentController {
     }
 
     @GetMapping("comments/{id}")
-    public String getComments(@PathVariable String id, Model model) {
+    public String getComment(@PathVariable String id, Model model) {
         Comment comment = service.getComment(id);
         model.addAttribute("comment", comment);
         return "comment";
@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @DeleteMapping("comments/{id}")
-    public String createComment(@PathVariable String id, Model model) {
+    public String deleteComment(@PathVariable String id, Model model) {
         Comment comment = service.deleteComment(id);
         log.warning("Комментарий удален: " + comment.getMessage());
         model.addAttribute("comment", comment);
