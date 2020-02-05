@@ -46,4 +46,6 @@ public interface LibraryService {
     Comment deleteComment(String id);
 
     Author deleteAuthor(String id);
+
+    void updateAuthor(Author author);
 }

@@ -38,7 +38,17 @@ public class AuthorController {
         Author author = service.createAuthor(name, surname, patronymic);
         log.info("Добавлен новый автор: " + author.getFullName());
         model.addAttribute("author", author);
-        return "author";
+        return "authors";
+    }
+
+    @PostMapping("authors/{id}")
+    public String createAuthor(@PathVariable String id, String name, String surname, String patronymic, Model model) {
+        Author author = service.getAuthor(id);
+        author.setName(name).setSurname(surname).setPatronymic(patronymic);
+        service.updateAuthor(author);
+        log.info("Автор изменен: " + author.getFullName());
+        model.addAttribute("author", author);
+        return "authors";
     }
 
     @DeleteMapping("authors/{id}")

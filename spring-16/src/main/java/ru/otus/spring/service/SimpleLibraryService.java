@@ -138,4 +138,9 @@ public class SimpleLibraryService implements LibraryService {
         authorRepository.delete(author);
         return author;
     }
+
+    @Override
+    public void updateAuthor(Author author) {
+        authorRepository.save(author);
+    }
 }
