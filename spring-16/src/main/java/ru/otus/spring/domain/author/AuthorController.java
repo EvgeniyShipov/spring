@@ -37,17 +37,17 @@ public class AuthorController {
     public String createAuthor(String name, String surname, String patronymic, Model model) {
         Author author = service.createAuthor(name, surname, patronymic);
         log.info("Добавлен новый автор: " + author.getFullName());
-        model.addAttribute("author", author);
+        model.addAttribute("authors", service.getAllAuthors());
         return "authors";
     }
 
     @PostMapping("authors/{id}")
-    public String createAuthor(@PathVariable String id, String name, String surname, String patronymic, Model model) {
+    public String updateAuthor(@PathVariable String id, String name, String surname, String patronymic, Model model) {
         Author author = service.getAuthor(id);
         author.setName(name).setSurname(surname).setPatronymic(patronymic);
         service.updateAuthor(author);
         log.info("Автор изменен: " + author.getFullName());
-        model.addAttribute("author", author);
+        model.addAttribute("authors", service.getAllAuthors());
         return "authors";
     }
 
@@ -55,7 +55,7 @@ public class AuthorController {
     public String deleteAuthor(@PathVariable String id, Model model) {
         Author author = service.deleteAuthor(id);
         log.warning("Автор удален: " + author.getFullName());
-        model.addAttribute("author", author);
-        return "author";
+        model.addAttribute("authors", service.getAllAuthors());
+        return "authors";
     }
 }

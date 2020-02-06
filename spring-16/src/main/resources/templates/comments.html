@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Comments</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
+<h1>Comments:</h1>
 
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Comment</th>
+        <th>Book</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${comment.id}">1</td>
+        <td th:text="${comment.message}">John</td>
+        <td th:text="${comment.book.title}">John</td>
+        <td>
+            <a th:href="@{/comments/{id}(id=${comment.id})}" href="comment.html">Edit</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<h4>
+    <a th:href="@{/}" href="index.html">back</a>
+</h4>
 </body>
 </html>

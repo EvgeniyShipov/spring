@@ -37,15 +37,25 @@ public class CommentController {
     public String createComment(String message, String idBook, Model model) {
         Comment comment = service.createComment(message, idBook);
         log.info("Добавлен новый комментарий: " + comment.getMessage());
-        model.addAttribute("comment", comment);
-        return "comment";
+        model.addAttribute("comments", service.getAllComments());
+        return "comments";
+    }
+
+    @PostMapping("comments/{id}")
+    public String updateComment(@PathVariable String id, String message, Model model) {
+        Comment comment = service.getComment(id);
+        comment.setMessage(message);
+        service.updateComment(comment);
+        log.info("Комментарий изменен: " + comment.getMessage());
+        model.addAttribute("comments", service.getAllComments());
+        return "comments";
     }
 
     @DeleteMapping("comments/{id}")
     public String deleteComment(@PathVariable String id, Model model) {
         Comment comment = service.deleteComment(id);
         log.warning("Комментарий удален: " + comment.getMessage());
-        model.addAttribute("comment", comment);
-        return "comment";
+        model.addAttribute("comments", service.getAllComments());
+        return "comments";
     }
 }

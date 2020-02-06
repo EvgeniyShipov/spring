@@ -143,4 +143,19 @@ public class SimpleLibraryService implements LibraryService {
     public void updateAuthor(Author author) {
         authorRepository.save(author);
     }
+
+    @Override
+    public void updateBook(Book book) {
+        bookRepository.save(book);
+    }
+
+    @Override
+    public void updateComment(Comment comment) {
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void updateJenre(Jenre jenre) {
+        jenreRepository.save(jenre);
+    }
 }

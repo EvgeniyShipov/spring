@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Authors</title>
+    <title>Jenre</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -15,25 +15,21 @@
     </style>
 </head>
 <body>
-<h1>Authors:</h1>
+<h1>Jenre:</h1>
 
-<table class="authors">
+<table class="books">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Patronymic</th>
+        <th>Type</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="author : ${authors}">
-        <td th:text="${author.id}">1</td>
-        <td th:text="${author.name}">John</td>
-        <td th:text="${author.surname}">Steinbeck</td>
-        <td th:text="${author.patronymic}">Ernst</td>
+    <tr th:each="jenre : ${jenres}">
+        <td th:text="${jenre.id}">1</td>
+        <td th:text="${jenre.type}">John</td>
         <td>
-            <a th:href="@{/authors/{id}(id=${author.id})}" href="author.html">Edit</a>
+            <a th:href="@{/jenres/{id}(id=${jenre.id})}" href="jenres.html">Edit</a>
         </td>
     </tr>
     </tbody>

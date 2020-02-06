@@ -48,4 +48,10 @@ public interface LibraryService {
     Author deleteAuthor(String id);
 
     void updateAuthor(Author author);
+
+    void updateBook(Book book);
+
+    void updateComment(Comment comment);
+
+    void updateJenre(Jenre jenre);
 }

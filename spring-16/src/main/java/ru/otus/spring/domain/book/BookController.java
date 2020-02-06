@@ -37,15 +37,25 @@ public class BookController {
     public String createBook(String title, String idAuthor, String idJenre, Model model) {
         Book book = service.createBook(title, idAuthor, idJenre);
         log.info(String.format("Добавлена новая книга: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
-        model.addAttribute("book", book);
-        return "book";
+        model.addAttribute("books", service.getAllBooks());
+        return "books";
+    }
+
+    @PostMapping("books/{id}")
+    public String updateAuthor(@PathVariable String id, String title, Model model) {
+        Book book = service.getBook(id);
+        book.setTitle(title);
+        service.updateBook(book);
+        log.info("Книга изменена: " + book.getTitle());
+        model.addAttribute("books", service.getAllBooks());
+        return "books";
     }
 
     @DeleteMapping("books/{id}")
     public String deleteBook(@PathVariable String id, Model model) {
         Book book = service.deleteBook(id);
         log.warning(String.format("Книга удалена: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
-        model.addAttribute("book", book);
-        return "book";
+        model.addAttribute("books", service.getAllBooks());
+        return "books";
     }
 }

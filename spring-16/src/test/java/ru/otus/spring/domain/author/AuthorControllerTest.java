@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.Model;
 import ru.otus.spring.domain.book.BookRepository;
 import ru.otus.spring.domain.comment.CommentRepository;
 import ru.otus.spring.domain.jenre.JenreRepository;
@@ -15,8 +14,7 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthorController.class)
@@ -24,12 +22,8 @@ class AuthorControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @Autowired
-    private AuthorController controller;
     @MockBean
     private LibraryService service;
-    @MockBean
-    private Model model;
 
     @MockBean
     private BookRepository bookRepository;
@@ -46,38 +40,58 @@ class AuthorControllerTest {
         when(service.getAllAuthors()).thenReturn(Collections.singletonList(author));
 
         this.mvc.perform(get("/authors"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("authors"));
+                .andExpect(status().isOk());
 
         verify(service).getAllAuthors();
     }
 
     @Test
-    void getAuthor() {
+    void getAuthor() throws Exception {
         Author author = new Author().setId("1").setName("name");
         when(service.getAuthor(author.getId())).thenReturn(author);
 
-        controller.getAuthor(author.getId(), model);
+        this.mvc.perform(get("/authors/" + author.getId()))
+                .andExpect(status().isOk());
 
         verify(service).getAuthor(author.getId());
     }
 
     @Test
-    void createAuthor() {
+    void createAuthor() throws Exception {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.createAuthor(author.getName(), author.getSurname(), author.getPatronymic())).thenReturn(author);
 
-        controller.createAuthor(author.getName(), author.getSurname(), author.getPatronymic(), model);
+        this.mvc.perform(post("/authors")
+                .param("name", author.getName())
+                .param("surname", author.getSurname())
+                .param("patronymic", author.getPatronymic()))
+                .andExpect(status().isOk());
 
         verify(service).createAuthor(author.getName(), author.getSurname(), author.getPatronymic());
     }
 
     @Test
-    void deleteAuthor() {
+    void updateAuthor() throws Exception {
+        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+        when(service.getAuthor(author.getId())).thenReturn(author);
+
+        this.mvc.perform(post("/authors/" + author.getId())
+                .param("name", author.getName())
+                .param("surname", author.getSurname())
+                .param("patronymic", author.getPatronymic()))
+                .andExpect(status().isOk());
+
+        verify(service).getAuthor(author.getId());
+        verify(service).updateAuthor(author);
+    }
+
+    @Test
+    void deleteAuthor() throws Exception {
         Author author = new Author().setId("1").setName("name");
         when(service.deleteAuthor(author.getId())).thenReturn(author);
 
-        controller.deleteAuthor(author.getId(), model);
+        this.mvc.perform(delete("/authors/" + author.getId()))
+                .andExpect(status().isOk());
 
         verify(service).deleteAuthor(author.getId());
     }
