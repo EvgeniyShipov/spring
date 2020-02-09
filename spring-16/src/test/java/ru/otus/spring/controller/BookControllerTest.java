@@ -1,22 +1,25 @@
-package ru.otus.spring.domain.book;
+package ru.otus.spring.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.spring.domain.author.Author;
-import ru.otus.spring.domain.author.AuthorRepository;
-import ru.otus.spring.domain.comment.CommentRepository;
-import ru.otus.spring.domain.jenre.Jenre;
-import ru.otus.spring.domain.jenre.JenreRepository;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Jenre;
+import ru.otus.spring.repository.AuthorRepository;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
+import ru.otus.spring.repository.JenreRepository;
 import ru.otus.spring.service.LibraryService;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
@@ -37,7 +40,9 @@ class BookControllerTest {
 
     @Test
     void getAllBooks() throws Exception {
-        Book book = new Book().setId("1").setTitle("title");
+        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(service.getAllBooks()).thenReturn(Collections.singletonList(book));
 
         this.mvc.perform(get("/books"))
@@ -64,10 +69,10 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(service.createBook(book.getTitle(), book.getAuthor().getId(), book.getJenre().getId())).thenReturn(book);
 
-        this.mvc.perform(post("/books")
+        this.mvc.perform(post("/books/create")
                 .param("title", book.getTitle())
-                .param("idAuthor", book.getAuthor().getId())
-                .param("idJenre", book.getJenre().getId()))
+                .param("author", book.getAuthor().getId())
+                .param("jenre", book.getJenre().getId()))
                 .andExpect(status().isOk());
 
         verify(service).createBook(book.getTitle(), author.getId(), jenre.getId());
@@ -79,7 +84,7 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author);
         when(service.deleteBook(book.getId())).thenReturn(book);
 
-        this.mvc.perform(delete("/books/" + book.getId()))
+        this.mvc.perform(get("/books/delete/" + book.getId()))
                 .andExpect(status().isOk());
 
         verify(service).deleteBook(book.getId());

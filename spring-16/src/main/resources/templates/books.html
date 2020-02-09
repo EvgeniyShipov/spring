@@ -29,13 +29,20 @@
     <tr th:each="book : ${books}">
         <td th:text="${book.id}">1</td>
         <td th:text="${book.title}">Title</td>
-        <td th:text="${book.author.surname}">Steinbeck</td>
+        <td th:text="${book.author.getFullName()}">John Steinbeck Ernst</td>
+        <td th:text="${book.jenre.type}">Comedy</td>
         <td>
             <a th:href="@{/books/{id}(id=${book.id})}" href="book.html">Edit</a>
+        </td>
+        <td>
+            <a th:href="@{/books/delete/{id}(id=${book.id})}" href="books.html" action="books.html">Delete</a>
         </td>
     </tr>
     </tbody>
 </table>
+<h4>
+    <a th:href="@{/books/create}" href="book_new.html">create new</a>
+</h4>
 <h4>
     <a th:href="@{/}" href="index.html">back</a>
 </h4>

@@ -33,9 +33,15 @@
         <td>
             <a th:href="@{/comments/{id}(id=${comment.id})}" href="comment.html">Edit</a>
         </td>
+        <td>
+            <a th:href="@{/comments/delete/{id}(id=${comment.id})}" href="comments.html" action="comments.html">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>
+<h4>
+    <a th:href="@{/comments/create}" href="comment_new.html">create new</a>
+</h4>
 <h4>
     <a th:href="@{/}" href="index.html">back</a>
 </h4>

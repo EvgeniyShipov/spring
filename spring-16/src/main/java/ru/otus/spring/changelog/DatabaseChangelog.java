@@ -4,10 +4,10 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import ru.otus.spring.domain.author.Author;
-import ru.otus.spring.domain.book.Book;
-import ru.otus.spring.domain.comment.Comment;
-import ru.otus.spring.domain.jenre.Jenre;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
+import ru.otus.spring.domain.Jenre;
 
 @ChangeLog(order = "001")
 public class DatabaseChangelog {
@@ -31,7 +31,15 @@ public class DatabaseChangelog {
         template.save(author);
     }
 
-    @ChangeSet(order = "002", id = "addbook", author = "shipovev", runAlways = true)
+    @ChangeSet(order = "002", id = "addComedy", author = "shipovev", runAlways = true)
+    public void insertComedy(MongoTemplate template) {
+        jenre = new Jenre()
+                .setId("1")
+                .setType("Comedy");
+        template.save(jenre);
+    }
+
+    @ChangeSet(order = "003", id = "addbook", author = "shipovev", runAlways = true)
     public void insertBook(MongoTemplate template) {
         book = new Book()
                 .setId("1")
@@ -41,21 +49,13 @@ public class DatabaseChangelog {
         template.save(book);
     }
 
-    @ChangeSet(order = "003", id = "addComment", author = "shipovev", runAlways = true)
+    @ChangeSet(order = "004", id = "addComment", author = "shipovev", runAlways = true)
     public void insertComment(MongoTemplate template) {
         Comment comment = new Comment()
                 .setId("1")
                 .setMessage("Just a message")
                 .setBook(book);
         template.save(comment);
-    }
-
-    @ChangeSet(order = "004", id = "addComedy", author = "shipovev", runAlways = true)
-    public void insertComedy(MongoTemplate template) {
-        jenre = new Jenre()
-                .setId("1")
-                .setType("Comedy");
-        template.save(jenre);
     }
 
     @ChangeSet(order = "005", id = "addTragedy", author = "shipovev", runAlways = true)

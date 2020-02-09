@@ -1,20 +1,23 @@
-package ru.otus.spring.domain.author;
+package ru.otus.spring.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.spring.domain.book.BookRepository;
-import ru.otus.spring.domain.comment.CommentRepository;
-import ru.otus.spring.domain.jenre.JenreRepository;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.repository.AuthorRepository;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
+import ru.otus.spring.repository.JenreRepository;
 import ru.otus.spring.service.LibraryService;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthorController.class)
@@ -61,7 +64,7 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.createAuthor(author.getName(), author.getSurname(), author.getPatronymic())).thenReturn(author);
 
-        this.mvc.perform(post("/authors")
+        this.mvc.perform(post("/authors/create")
                 .param("name", author.getName())
                 .param("surname", author.getSurname())
                 .param("patronymic", author.getPatronymic()))
@@ -75,7 +78,7 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.getAuthor(author.getId())).thenReturn(author);
 
-        this.mvc.perform(post("/authors/" + author.getId())
+        this.mvc.perform(post("/authors/update/" + author.getId())
                 .param("name", author.getName())
                 .param("surname", author.getSurname())
                 .param("patronymic", author.getPatronymic()))
@@ -90,7 +93,7 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name");
         when(service.deleteAuthor(author.getId())).thenReturn(author);
 
-        this.mvc.perform(delete("/authors/" + author.getId()))
+        this.mvc.perform(get("/authors/delete/" + author.getId()))
                 .andExpect(status().isOk());
 
         verify(service).deleteAuthor(author.getId());

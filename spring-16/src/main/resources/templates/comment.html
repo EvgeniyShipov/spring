@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<form id="edit-form" th:action="@{/comments/{id}(id=${comment.id})}" th:method="post" action="comments.html">
+<form id="edit-form" th:action="@{/comments/update/{id}(id=${comment.id})}" th:method="post" action="comments.html">
     <h1>Comment Info:</h1>
 
     <div class="row">

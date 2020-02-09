@@ -24,7 +24,7 @@
 </head>
 <body>
 <form id="edit-form" th:href="@{/authors}" href="authors.html"
-      th:action="@{/authors/{id}(id=${author.id})}" th:method="post" action="authors.html">
+      th:action="@{/authors/update/{id}(id=${author.id})}" th:method="post" action="authors.html">
     <h1>Author Info:</h1>
 
     <div class="row">
@@ -39,12 +39,12 @@
 
     <div class="row">
         <label for="holder-input-surname">Surname:</label>
-        <input id="holder-input-surname" name="surname" type="text" th:value="${author.surname}" value="John"/>
+        <input id="holder-input-surname" name="surname" type="text" th:value="${author.surname}" value="Steinbeck"/>
     </div>
 
     <div class="row">
         <label for="holder-input-patronymic">Patronymic:</label>
-        <input id="holder-input-patronymic" name="patronymic" type="text" th:value="${author.patronymic}" value="John"/>
+        <input id="holder-input-patronymic" name="patronymic" type="text" th:value="${author.patronymic}" value="Ernst"/>
     </div>
 
     <div class="row">

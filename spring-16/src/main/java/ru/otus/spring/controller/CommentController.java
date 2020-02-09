@@ -1,13 +1,14 @@
-package ru.otus.spring.domain.comment;
+package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
 import ru.otus.spring.service.LibraryService;
 
 import java.util.List;
@@ -33,15 +34,22 @@ public class CommentController {
         return "comment";
     }
 
-    @PostMapping("comments")
-    public String createComment(String message, String idBook, Model model) {
-        Comment comment = service.createComment(message, idBook);
+    @GetMapping("comments/create")
+    public String createComment(Comment comment, Model model) {
+        List<Book> books = service.getAllBooks();
+        model.addAttribute("books", books);
+        return "comment_new";
+    }
+
+    @PostMapping("comments/create")
+    public String createComment(String message, String book, Model model) {
+        Comment comment = service.createComment(message, book);
         log.info("Добавлен новый комментарий: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());
         return "comments";
     }
 
-    @PostMapping("comments/{id}")
+    @PostMapping("comments/update/{id}")
     public String updateComment(@PathVariable String id, String message, Model model) {
         Comment comment = service.getComment(id);
         comment.setMessage(message);
@@ -51,7 +59,7 @@ public class CommentController {
         return "comments";
     }
 
-    @DeleteMapping("comments/{id}")
+    @GetMapping("comments/delete/{id}")
     public String deleteComment(@PathVariable String id, Model model) {
         Comment comment = service.deleteComment(id);
         log.warning("Комментарий удален: " + comment.getMessage());

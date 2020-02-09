@@ -1,20 +1,24 @@
-package ru.otus.spring.domain.comment;
+package ru.otus.spring.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.spring.domain.author.AuthorRepository;
-import ru.otus.spring.domain.book.BookRepository;
-import ru.otus.spring.domain.jenre.JenreRepository;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
+import ru.otus.spring.repository.AuthorRepository;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
+import ru.otus.spring.repository.JenreRepository;
 import ru.otus.spring.service.LibraryService;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -35,7 +39,8 @@ class CommentControllerTest {
 
     @Test
     void getAllComments() throws Exception {
-        Comment comment = new Comment().setId("1").setMessage("message");
+        Book book = new Book().setId("1").setTitle("title");
+        Comment comment = new Comment().setId("1").setMessage("message").setBook(book);
         when(service.getAllComments()).thenReturn(Collections.singletonList(comment));
 
         this.mvc.perform(get("/comments"))
@@ -61,9 +66,9 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(service.createComment(comment.getMessage(), bookId)).thenReturn(comment);
 
-        this.mvc.perform(post("/comments")
+        this.mvc.perform(post("/comments/create")
                 .param("message", comment.getMessage())
-                .param("idBook", bookId))
+                .param("book", bookId))
                 .andExpect(status().isOk());
 
         verify(service).createComment(comment.getMessage(), bookId);
@@ -74,7 +79,7 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(service.deleteComment(comment.getId())).thenReturn(comment);
 
-        this.mvc.perform(delete("/comments/" + comment.getId()))
+        this.mvc.perform(get("/comments/delete/" + comment.getId()))
                 .andExpect(status().isOk());
 
         verify(service).deleteComment(comment.getId());

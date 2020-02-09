@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Jenre</title>
+    <title>New author</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -23,17 +23,22 @@
     </style>
 </head>
 <body>
-<form id="edit-form" th:action="@{/jenres/update/{id}(id=${jenre.id})}" th:method="post" action="jenres.html">
-    <h1>Jenre Info:</h1>
+<form id="create-form" th:action="@{/authors/create}" th:object="${author}" th:method="post" action="authors.html">
+    <h1>New author:</h1>
 
     <div class="row">
-        <label for="id-input">ID:</label>
-        <input id="id-input" type="text" readonly="readonly" th:value="${jenre.id}" value="1"/>
+        <label for="name">Name:</label>
+        <input id="name" type="text" th:field="*{name}" value="John"/>
     </div>
 
     <div class="row">
-        <label for="holder-input-type">Type:</label>
-        <input id="holder-input-type" name="type" type="text" th:value="${jenre.type}" value="Tragedy"/>
+        <label for="surname">Surname:</label>
+        <input id="surname" type="text" th:field="*{surname}" value="Steinbeck"/>
+    </div>
+
+    <div class="row">
+        <label for="patronymic">Patronymic:</label>
+        <input id="patronymic" type="text" th:field="*{patronymic}" value="Ernst"/>
     </div>
 
     <div class="row">

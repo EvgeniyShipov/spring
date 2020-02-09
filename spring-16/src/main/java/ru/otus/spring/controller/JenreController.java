@@ -1,13 +1,13 @@
-package ru.otus.spring.domain.jenre;
+package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.otus.spring.domain.Jenre;
 import ru.otus.spring.service.LibraryService;
 
 import java.util.List;
@@ -33,15 +33,20 @@ public class JenreController {
         return "jenre";
     }
 
-    @PostMapping("jenres")
-    public String createJenre(String name, Model model) {
-        Jenre jenre = service.createJenre(name);
+    @GetMapping("jenres/create")
+    public String createJenre(Jenre jenre, Model model) {
+        return "jenre_new";
+    }
+
+    @PostMapping("jenres/create")
+    public String createJenre(String type, Model model) {
+        Jenre jenre = service.createJenre(type);
         log.warning("Добавлен новый жанр: " + jenre.getType());
         model.addAttribute("jenres", service.getAllJenre());
         return "jenres";
     }
 
-    @PostMapping("jenres/{id}")
+    @PostMapping("jenres/update/{id}")
     public String updateJenre(@PathVariable String id, String type, Model model) {
         Jenre jenre = service.getJenre(id);
         jenre.setType(type);
@@ -51,7 +56,7 @@ public class JenreController {
         return "jenres";
     }
 
-    @DeleteMapping("jenres/{id}")
+    @GetMapping("jenres/delete/{id}")
     public String deleteJenre(@PathVariable String id, Model model) {
         Jenre jenre = service.deleteJenre(id);
         log.warning("Жанр удален: " + jenre.getType());

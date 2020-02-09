@@ -1,12 +1,10 @@
-package ru.otus.spring.domain.book;
+package ru.otus.spring.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import ru.otus.spring.domain.author.Author;
-import ru.otus.spring.domain.jenre.Jenre;
 
 @Data
 @Accessors(chain = true)

@@ -35,9 +35,15 @@
         <td>
             <a th:href="@{/authors/{id}(id=${author.id})}" href="author.html">Edit</a>
         </td>
+        <td>
+            <a th:href="@{/authors/delete/{id}(id=${author.id})}" href="authors.html" action="authors.html">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>
+<h4>
+    <a th:href="@{/authors/create}" href="author_new.html">create new</a>
+</h4>
 <h4>
     <a th:href="@{/}" href="index.html">back</a>
 </h4>

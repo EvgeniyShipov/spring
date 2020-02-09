@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Jenre</title>
+    <title>New jenre</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -23,17 +23,12 @@
     </style>
 </head>
 <body>
-<form id="edit-form" th:action="@{/jenres/update/{id}(id=${jenre.id})}" th:method="post" action="jenres.html">
-    <h1>Jenre Info:</h1>
+<form id="create-form" th:action="@{/jenres/create}" th:object="${jenre}" th:method="post" action="jenres.html">
+    <h1>New jenre:</h1>
 
     <div class="row">
-        <label for="id-input">ID:</label>
-        <input id="id-input" type="text" readonly="readonly" th:value="${jenre.id}" value="1"/>
-    </div>
-
-    <div class="row">
-        <label for="holder-input-type">Type:</label>
-        <input id="holder-input-type" name="type" type="text" th:value="${jenre.type}" value="Tragedy"/>
+        <label for="jenre">Jenre:</label>
+        <input id="jenre" type="text" th:field="*{type}" value="Tragedy"/>
     </div>
 
     <div class="row">

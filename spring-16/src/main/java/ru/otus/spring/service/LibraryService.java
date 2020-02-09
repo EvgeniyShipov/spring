@@ -1,9 +1,9 @@
 package ru.otus.spring.service;
 
-import ru.otus.spring.domain.author.Author;
-import ru.otus.spring.domain.book.Book;
-import ru.otus.spring.domain.comment.Comment;
-import ru.otus.spring.domain.jenre.Jenre;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
+import ru.otus.spring.domain.Jenre;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface LibraryService {
 
     Author createAuthor(String name, String surname, String patronymic);
 
-    Jenre createJenre(String name);
+    Jenre createJenre(String type);
 
     Comment createComment(String message, String idBook);
 

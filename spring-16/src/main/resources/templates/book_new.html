@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Book</title>
+    <title>New book</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -23,24 +23,17 @@
     </style>
 </head>
 <body>
-<form id="edit-form" th:href="@{/books}" href="books.html"
-      th:action="@{/books/update/{id}(id=${book.id})}" th:method="post" action="books.html">
-    <h1>Books Info:</h1>
-
-    <div class="row">
-        <label for="id">ID:</label>
-        <input id="id" type="text" readonly="readonly" th:value="${book.id}" value="1"/>
-    </div>
+<form id="create-form" th:action="@{/books/create}" th:object="${book}" th:method="post" action="books.html">
+    <h1>New book:</h1>
 
     <div class="row">
         <label for="title">Title:</label>
-        <input id="title" name="title" type="text" th:value="${book.title}"
-               value="The Winter of Our Discontent"/>
+        <input id="title" type="text" th:field="*{title}" value="The Winter of Our Discontent"/>
     </div>
 
     <div class="row">
         <label for="author">Author:</label>
-        <select id="author" th:field="${book.author}">
+        <select id="author" th:field="*{author}">
             <option th:each="author : ${authors}"
                     th:value="${author.id}"
                     th:utext="${author.getFullName()}"
@@ -51,7 +44,7 @@
 
     <div class="row">
         <label for="jenre">Jenre:</label>
-        <select id="jenre" th:field="${book.jenre}">
+        <select id="jenre" th:field="*{jenre}">
             <option th:each="jenre : ${jenres}"
                     th:value="${jenre.id}"
                     th:utext="${jenre.type}"
