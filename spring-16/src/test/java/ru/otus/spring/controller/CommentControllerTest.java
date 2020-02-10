@@ -62,6 +62,17 @@ class CommentControllerTest {
 
     @Test
     void createComment() throws Exception {
+        Comment comment = new Comment().setId("1").setMessage("message");
+
+        this.mvc.perform(get("/comments/create")
+                .param("message", comment.getMessage()))
+                .andExpect(status().isOk());
+
+        verify(service).getAllBooks();
+    }
+
+    @Test
+    void createComment2() throws Exception {
         String bookId = "1";
         Comment comment = new Comment().setId("1").setMessage("message");
         when(service.createComment(comment.getMessage(), bookId)).thenReturn(comment);
@@ -72,6 +83,19 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         verify(service).createComment(comment.getMessage(), bookId);
+    }
+
+    @Test
+    void updateComment() throws Exception {
+        Comment comment = new Comment().setId("1").setMessage("message");
+        when(service.getComment(comment.getId())).thenReturn(comment);
+
+        this.mvc.perform(post("/comments/update/" + comment.getId()))
+                .andExpect(status().isOk());
+
+        verify(service).getComment(comment.getId());
+        verify(service).updateComment(comment);
+        verify(service).getAllComments();
     }
 
     @Test

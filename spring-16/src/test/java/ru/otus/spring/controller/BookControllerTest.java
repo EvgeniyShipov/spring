@@ -64,7 +64,21 @@ class BookControllerTest {
 
     @Test
     void createBook() throws Exception {
-        Jenre jenre =  new Jenre().setId("1");
+        Jenre jenre = new Jenre().setId("1");
+        Author author = new Author().setId("1").setName("name");
+        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+
+        this.mvc.perform(get("/books/create")
+                .param("book", book.toString()))
+                .andExpect(status().isOk());
+
+        verify(service).getAllAuthors();
+        verify(service).getAllJenre();
+    }
+
+    @Test
+    void createBook2() throws Exception {
+        Jenre jenre = new Jenre().setId("1");
         Author author = new Author().setId("1").setName("name");
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(service.createBook(book.getTitle(), book.getAuthor().getId(), book.getJenre().getId())).thenReturn(book);
@@ -76,6 +90,28 @@ class BookControllerTest {
                 .andExpect(status().isOk());
 
         verify(service).createBook(book.getTitle(), author.getId(), jenre.getId());
+    }
+
+    @Test
+    void updateBook() throws Exception {
+        Jenre jenre = new Jenre().setId("1");
+        Author author = new Author().setId("1").setName("name");
+        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+
+        when(service.getBook(book.getId())).thenReturn(book);
+        when(service.getAuthor(author.getId())).thenReturn(author);
+        when(service.getJenre(jenre.getId())).thenReturn(jenre);
+
+        this.mvc.perform(post("/books/update/" + book.getId())
+                .param("title", book.getTitle())
+                .param("author", book.getAuthor().getId())
+                .param("jenre", book.getJenre().getId()))
+                .andExpect(status().isOk());
+
+        verify(service).getBook(book.getId());
+        verify(service).getAuthor(author.getId());
+        verify(service).getJenre(jenre.getId());
+        verify(service).updateBook(book);
     }
 
     @Test

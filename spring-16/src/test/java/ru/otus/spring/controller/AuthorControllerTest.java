@@ -62,6 +62,15 @@ class AuthorControllerTest {
     @Test
     void createAuthor() throws Exception {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+
+        this.mvc.perform(get("/authors/create")
+                .param("name", author.getName()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createAuthor2() throws Exception {
+        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.createAuthor(author.getName(), author.getSurname(), author.getPatronymic())).thenReturn(author);
 
         this.mvc.perform(post("/authors/create")

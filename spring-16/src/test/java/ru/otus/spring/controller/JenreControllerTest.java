@@ -61,6 +61,15 @@ class JenreControllerTest {
     @Test
     void createJenre() throws Exception {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
+
+        this.mvc.perform(get("/jenres/create")
+                .param("jenre", jenre.toString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createJenre2() throws Exception {
+        Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(service.createJenre(jenre.getType())).thenReturn(jenre);
 
         this.mvc.perform(post("/jenres/create")
@@ -68,6 +77,19 @@ class JenreControllerTest {
                 .andExpect(status().isOk());
 
         verify(service).createJenre(jenre.getType());
+    }
+
+    @Test
+    void updateJenre() throws Exception {
+        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        when(service.getJenre(jenre.getId())).thenReturn(jenre);
+
+        this.mvc.perform(post("/jenres/update/" + jenre.getId()))
+                .andExpect(status().isOk());
+
+        verify(service).getJenre(jenre.getId());
+        verify(service).updateJenre(jenre);
+        verify(service).getAllJenre();
     }
 
     @Test
