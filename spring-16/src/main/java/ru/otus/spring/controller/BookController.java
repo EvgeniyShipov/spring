@@ -53,7 +53,7 @@ public class BookController {
         Book book = service.createBook(title, author, jenre);
         log.info(String.format("Добавлена новая книга: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());
-        return "books";
+        return "redirect:/books";
     }
 
     @PostMapping("books/update/{id}")
@@ -65,14 +65,14 @@ public class BookController {
         service.updateBook(book);
         log.info("Книга изменена: " + book.getTitle());
         model.addAttribute("books", service.getAllBooks());
-        return "books";
+        return "redirect:/books";
     }
 
-    @GetMapping("books/delete/{id}")
+    @PostMapping("books/delete/{id}")
     public String deleteBook(@PathVariable String id, Model model) {
         Book book = service.deleteBook(id);
         log.warning(String.format("Книга удалена: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());
-        return "books";
+        return "redirect:/books";
     }
 }

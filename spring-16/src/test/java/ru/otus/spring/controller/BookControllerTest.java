@@ -18,9 +18,10 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookController.class)
 class BookControllerTest {
@@ -46,7 +47,10 @@ class BookControllerTest {
         when(service.getAllBooks()).thenReturn(Collections.singletonList(book));
 
         this.mvc.perform(get("/books"))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().attributeExists("books"),
+                        view().name("books")));
 
         verify(service).getAllBooks();
     }
@@ -57,7 +61,10 @@ class BookControllerTest {
         when(service.getBook(book.getId())).thenReturn(book);
 
         this.mvc.perform(get("/books/" + book.getId()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().attributeExists("book"),
+                        view().name("book")));
 
         verify(service).getBook(book.getId());
     }
@@ -70,7 +77,13 @@ class BookControllerTest {
 
         this.mvc.perform(get("/books/create")
                 .param("book", book.toString()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(3),
+                        model().attributeExists("book"),
+                        model().attributeExists("authors"),
+                        model().attributeExists("jenres"),
+                        view().name("book_new")));
 
         verify(service).getAllAuthors();
         verify(service).getAllJenre();
@@ -87,7 +100,7 @@ class BookControllerTest {
                 .param("title", book.getTitle())
                 .param("author", book.getAuthor().getId())
                 .param("jenre", book.getJenre().getId()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/books"));
 
         verify(service).createBook(book.getTitle(), author.getId(), jenre.getId());
     }
@@ -106,7 +119,7 @@ class BookControllerTest {
                 .param("title", book.getTitle())
                 .param("author", book.getAuthor().getId())
                 .param("jenre", book.getJenre().getId()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/books"));
 
         verify(service).getBook(book.getId());
         verify(service).getAuthor(author.getId());
@@ -120,8 +133,8 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author);
         when(service.deleteBook(book.getId())).thenReturn(book);
 
-        this.mvc.perform(get("/books/delete/" + book.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/books/delete/" + book.getId()))
+                .andExpect(redirectedUrl("/books"));
 
         verify(service).deleteBook(book.getId());
     }

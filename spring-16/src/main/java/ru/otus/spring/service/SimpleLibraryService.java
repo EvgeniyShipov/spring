@@ -115,8 +115,11 @@ public class SimpleLibraryService implements LibraryService {
     @Override
     public Jenre deleteJenre(String id) {
         Jenre jenre = getJenre(id);
-        jenreRepository.delete(jenre);
-        return jenre;
+        if (bookRepository.findByJenre(jenre).isEmpty()) {
+            jenreRepository.delete(jenre);
+            return jenre;
+        }
+        throw new IllegalStateException("Нельзя удалить жанр, оставив книги");
     }
 
     @Override
@@ -135,8 +138,11 @@ public class SimpleLibraryService implements LibraryService {
     @Override
     public Author deleteAuthor(String id) {
         Author author = getAuthor(id);
-        authorRepository.delete(author);
-        return author;
+        if (bookRepository.findByAuthor(author).isEmpty()) {
+            authorRepository.delete(author);
+            return author;
+        }
+        throw new IllegalStateException("Нельзя удалить автора, оставив его книги");
     }
 
     @Override

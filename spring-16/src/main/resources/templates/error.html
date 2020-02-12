@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h2>Error:</h2>
+    <p th:text="${exception.getMessage()}">...</p>
+</div>
+<h4>
+    <a th:href="@{/}" href="index.html">main view</a>
+</h4>
+
+</body>
+</html>

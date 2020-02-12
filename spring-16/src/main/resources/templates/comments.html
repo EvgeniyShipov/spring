@@ -30,12 +30,16 @@
         <td th:text="${comment.id}">1</td>
         <td th:text="${comment.message}">John</td>
         <td th:text="${comment.book.title}">John</td>
-        <td>
-            <a th:href="@{/comments/{id}(id=${comment.id})}" href="comment.html">Edit</a>
-        </td>
-        <td>
-            <a th:href="@{/comments/delete/{id}(id=${comment.id})}" href="comments.html" action="comments.html">Delete</a>
-        </td>
+        <form th:action="@{/comments/{id}(id=${comment.id})}" th:method="get">
+            <td>
+                <button type="submit">Edit</button>
+            </td>
+        </form>
+        <form th:action="@{/comments/delete/{id}(id=${comment.id})}" th:method="post">
+            <td>
+                <button type="submit">Delete</button>
+            </td>
+        </form>
     </tr>
     </tbody>
 </table>

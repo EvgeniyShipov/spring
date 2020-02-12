@@ -43,7 +43,7 @@ public class AuthorController {
         Author author = service.createAuthor(name, surname, patronymic);
         log.info("Добавлен новый автор: " + author.getFullName());
         model.addAttribute("authors", service.getAllAuthors());
-        return "authors";
+        return "redirect:/authors";
     }
 
     @PostMapping("authors/update/{id}")
@@ -53,14 +53,14 @@ public class AuthorController {
         service.updateAuthor(author);
         log.info("Автор изменен: " + author.getFullName());
         model.addAttribute("authors", service.getAllAuthors());
-        return "authors";
+        return "redirect:/authors";
     }
 
-    @GetMapping("authors/delete/{id}")
+    @PostMapping("authors/delete/{id}")
     public String deleteAuthor(@PathVariable String id, Model model) {
         Author author = service.deleteAuthor(id);
         log.warning("Автор удален: " + author.getFullName());
         model.addAttribute("authors", service.getAllAuthors());
-        return "authors";
+        return "redirect:/authors";
     }
 }

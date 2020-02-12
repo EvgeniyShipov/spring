@@ -28,12 +28,16 @@
     <tr th:each="jenre : ${jenres}">
         <td th:text="${jenre.id}">1</td>
         <td th:text="${jenre.type}">John</td>
-        <td>
-            <a th:href="@{/jenres/{id}(id=${jenre.id})}" href="jenres.html">Edit</a>
-        </td>
-        <td>
-            <a th:href="@{/jenres/delete/{id}(id=${jenre.id})}" href="jenres.html" action="jenres.html">Delete</a>
-        </td>
+        <form th:action="@{/jenres/{id}(id=${jenre.id})}" th:method="get">
+            <td>
+                <button type="submit">Edit</button>
+            </td>
+        </form>
+        <form th:action="@{/jenres/delete/{id}(id=${jenre.id})}" th:method="post">
+            <td>
+                <button type="submit">Delete</button>
+            </td>
+        </form>
     </tr>
     </tbody>
 </table>

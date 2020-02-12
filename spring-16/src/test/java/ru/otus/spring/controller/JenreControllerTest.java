@@ -16,9 +16,10 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(JenreController.class)
 class JenreControllerTest {
@@ -42,7 +43,11 @@ class JenreControllerTest {
         when(service.getAllJenre()).thenReturn(Collections.singletonList(jenre));
 
         this.mvc.perform(get("/jenres"))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("jenres"),
+                        view().name("jenres")));
 
         verify(service).getAllJenre();
     }
@@ -53,7 +58,11 @@ class JenreControllerTest {
         when(service.getJenre(jenre.getId())).thenReturn(jenre);
 
         this.mvc.perform(get("/jenres/" + jenre.getId()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("jenre"),
+                        view().name("jenre")));
 
         verify(service).getJenre(jenre.getId());
     }
@@ -64,7 +73,9 @@ class JenreControllerTest {
 
         this.mvc.perform(get("/jenres/create")
                 .param("jenre", jenre.toString()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        view().name("jenre_new")));
     }
 
     @Test
@@ -74,7 +85,7 @@ class JenreControllerTest {
 
         this.mvc.perform(post("/jenres/create")
                 .param("type", jenre.getType()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/jenres"));
 
         verify(service).createJenre(jenre.getType());
     }
@@ -85,7 +96,7 @@ class JenreControllerTest {
         when(service.getJenre(jenre.getId())).thenReturn(jenre);
 
         this.mvc.perform(post("/jenres/update/" + jenre.getId()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/jenres"));
 
         verify(service).getJenre(jenre.getId());
         verify(service).updateJenre(jenre);
@@ -97,8 +108,8 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(service.deleteJenre(jenre.getId())).thenReturn(jenre);
 
-        this.mvc.perform(get("/jenres/delete/" + jenre.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/jenres/delete/" + jenre.getId()))
+                .andExpect(redirectedUrl("/jenres"));
 
         verify(service).deleteJenre(jenre.getId());
     }

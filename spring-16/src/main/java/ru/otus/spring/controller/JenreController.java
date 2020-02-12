@@ -43,7 +43,7 @@ public class JenreController {
         Jenre jenre = service.createJenre(type);
         log.warning("Добавлен новый жанр: " + jenre.getType());
         model.addAttribute("jenres", service.getAllJenre());
-        return "jenres";
+        return "redirect:/jenres";
     }
 
     @PostMapping("jenres/update/{id}")
@@ -53,14 +53,14 @@ public class JenreController {
         service.updateJenre(jenre);
         log.info("Жанр изменен: " + jenre.getType());
         model.addAttribute("jenres", service.getAllJenre());
-        return "jenres";
+        return "redirect:/jenres";
     }
 
-    @GetMapping("jenres/delete/{id}")
+    @PostMapping("jenres/delete/{id}")
     public String deleteJenre(@PathVariable String id, Model model) {
         Jenre jenre = service.deleteJenre(id);
         log.warning("Жанр удален: " + jenre.getType());
         model.addAttribute("jenres", service.getAllJenre());
-        return "jenres";
+        return "redirect:/jenres";
     }
 }

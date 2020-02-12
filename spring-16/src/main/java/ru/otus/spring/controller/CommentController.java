@@ -46,7 +46,7 @@ public class CommentController {
         Comment comment = service.createComment(message, book);
         log.info("Добавлен новый комментарий: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());
-        return "comments";
+        return "redirect:/comments";
     }
 
     @PostMapping("comments/update/{id}")
@@ -56,14 +56,14 @@ public class CommentController {
         service.updateComment(comment);
         log.info("Комментарий изменен: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());
-        return "comments";
+        return "redirect:/comments";
     }
 
-    @GetMapping("comments/delete/{id}")
+    @PostMapping("comments/delete/{id}")
     public String deleteComment(@PathVariable String id, Model model) {
         Comment comment = service.deleteComment(id);
         log.warning("Комментарий удален: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());
-        return "comments";
+        return "redirect:/comments";
     }
 }

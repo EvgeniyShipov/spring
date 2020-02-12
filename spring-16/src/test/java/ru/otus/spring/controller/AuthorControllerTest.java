@@ -16,9 +16,10 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthorController.class)
 class AuthorControllerTest {
@@ -43,7 +44,10 @@ class AuthorControllerTest {
         when(service.getAllAuthors()).thenReturn(Collections.singletonList(author));
 
         this.mvc.perform(get("/authors"))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().attributeExists("authors"),
+                        view().name("authors")));
 
         verify(service).getAllAuthors();
     }
@@ -54,7 +58,10 @@ class AuthorControllerTest {
         when(service.getAuthor(author.getId())).thenReturn(author);
 
         this.mvc.perform(get("/authors/" + author.getId()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().attributeExists("author"),
+                        view().name("author")));
 
         verify(service).getAuthor(author.getId());
     }
@@ -65,7 +72,8 @@ class AuthorControllerTest {
 
         this.mvc.perform(get("/authors/create")
                 .param("name", author.getName()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("author_new"));
     }
 
     @Test
@@ -77,7 +85,7 @@ class AuthorControllerTest {
                 .param("name", author.getName())
                 .param("surname", author.getSurname())
                 .param("patronymic", author.getPatronymic()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/authors"));
 
         verify(service).createAuthor(author.getName(), author.getSurname(), author.getPatronymic());
     }
@@ -91,7 +99,7 @@ class AuthorControllerTest {
                 .param("name", author.getName())
                 .param("surname", author.getSurname())
                 .param("patronymic", author.getPatronymic()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/authors"));
 
         verify(service).getAuthor(author.getId());
         verify(service).updateAuthor(author);
@@ -102,8 +110,8 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name");
         when(service.deleteAuthor(author.getId())).thenReturn(author);
 
-        this.mvc.perform(get("/authors/delete/" + author.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/authors/delete/" + author.getId()))
+                .andExpect(redirectedUrl("/authors"));
 
         verify(service).deleteAuthor(author.getId());
     }

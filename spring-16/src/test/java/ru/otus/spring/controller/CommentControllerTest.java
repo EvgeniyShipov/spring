@@ -17,9 +17,10 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CommentController.class)
 class CommentControllerTest {
@@ -44,7 +45,11 @@ class CommentControllerTest {
         when(service.getAllComments()).thenReturn(Collections.singletonList(comment));
 
         this.mvc.perform(get("/comments"))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("comments"),
+                        view().name("comments")));
 
         verify(service).getAllComments();
     }
@@ -55,7 +60,11 @@ class CommentControllerTest {
         when(service.getComment(comment.getId())).thenReturn(comment);
 
         this.mvc.perform(get("/comments/" + comment.getId()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("comment"),
+                        view().name("comment")));
 
         verify(service).getComment(comment.getId());
     }
@@ -66,7 +75,12 @@ class CommentControllerTest {
 
         this.mvc.perform(get("/comments/create")
                 .param("message", comment.getMessage()))
-                .andExpect(status().isOk());
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(2),
+                        model().attributeExists("books"),
+                        model().attributeExists("comment"),
+                        view().name("comment_new")));
 
         verify(service).getAllBooks();
     }
@@ -80,7 +94,7 @@ class CommentControllerTest {
         this.mvc.perform(post("/comments/create")
                 .param("message", comment.getMessage())
                 .param("book", bookId))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/comments"));
 
         verify(service).createComment(comment.getMessage(), bookId);
     }
@@ -91,7 +105,7 @@ class CommentControllerTest {
         when(service.getComment(comment.getId())).thenReturn(comment);
 
         this.mvc.perform(post("/comments/update/" + comment.getId()))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/comments"));
 
         verify(service).getComment(comment.getId());
         verify(service).updateComment(comment);
@@ -103,8 +117,8 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(service.deleteComment(comment.getId())).thenReturn(comment);
 
-        this.mvc.perform(get("/comments/delete/" + comment.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/comments/delete/" + comment.getId()))
+                .andExpect(redirectedUrl("/comments"));
 
         verify(service).deleteComment(comment.getId());
     }
