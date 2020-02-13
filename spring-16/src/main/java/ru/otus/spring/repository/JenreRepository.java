@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface JenreRepository extends CrudRepository<Jenre, Long> {
 
-    Optional<Jenre> findById(String aLong);
+    Optional<Jenre> findById(String id);
 }
