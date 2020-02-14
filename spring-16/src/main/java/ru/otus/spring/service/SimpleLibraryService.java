@@ -114,8 +114,8 @@ public class SimpleLibraryService implements LibraryService {
 
     @Override
     public Jenre deleteJenre(String id) {
-        Jenre jenre = getJenre(id);
-        if (bookRepository.findByJenre(jenre).isEmpty()) {
+        if (bookRepository.existsById(Long.valueOf(id))) {
+            Jenre jenre = getJenre(id);
             jenreRepository.delete(jenre);
             return jenre;
         }
@@ -137,8 +137,8 @@ public class SimpleLibraryService implements LibraryService {
 
     @Override
     public Author deleteAuthor(String id) {
-        Author author = getAuthor(id);
-        if (bookRepository.findByAuthor(author).isEmpty()) {
+        if (bookRepository.existsById(Long.valueOf(id))) {
+            Author author = getAuthor(id);
             authorRepository.delete(author);
             return author;
         }
