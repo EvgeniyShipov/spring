@@ -3,7 +3,6 @@ package ru.otus.spring.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.repository.BookRepository;
@@ -17,7 +16,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @Log
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class BookController {
 
@@ -44,7 +43,7 @@ public class BookController {
                 .body(result);
     }
 
-    @PatchMapping("books/{id}")
+    @PutMapping("books/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable String id, @RequestBody Book book) {
         Book result = repository.save(book);
         log.info("Книга изменена: " + book);

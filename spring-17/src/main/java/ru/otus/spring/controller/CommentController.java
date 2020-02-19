@@ -3,7 +3,6 @@ package ru.otus.spring.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.repository.CommentRepository;
@@ -15,7 +14,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.*;
 
 @Log
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class CommentController {
 
