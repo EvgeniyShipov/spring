@@ -1,5 +1,6 @@
 package ru.otus.spring.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,6 +36,7 @@ class BookControllerTest {
     private CommentRepository commentRepository;
     @MockBean
     private AuthorRepository authorRepository;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void getAllBooks() throws Exception {
@@ -42,7 +45,7 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(bookRepository.findAll()).thenReturn(Collections.singletonList(book));
 
-        this.mvc.perform(get("/books"))
+        mvc.perform(get("/books"))
                 .andExpect(status().isOk());
 
         verify(bookRepository).findAll();
@@ -53,7 +56,7 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title");
         when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
 
-        this.mvc.perform(get("/books/" + book.getId()))
+        mvc.perform(get("/books/" + book.getId()))
                 .andExpect(status().isOk());
 
         verify(bookRepository).findById(book.getId());
@@ -66,11 +69,10 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(bookRepository.save(book)).thenReturn(book);
 
-        this.mvc.perform(post("/books")
-                .param("title", book.getTitle())
-                .param("author", book.getAuthor().getId())
-                .param("jenre", book.getJenre().getId()))
-                .andExpect(status().isOk());
+        mvc.perform(post("/books")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(book)))
+                .andExpect(status().isCreated());
 
         verify(bookRepository).save(book);
     }
@@ -82,10 +84,9 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(bookRepository.save(book)).thenReturn(book);
 
-        this.mvc.perform(patch("/books/" + book.getId())
-                .param("title", book.getTitle())
-                .param("author", book.getAuthor().getId())
-                .param("jenre", book.getJenre().getId()))
+        mvc.perform(put("/books/" + book.getId())
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(book)))
                 .andExpect(status().isOk());
 
         verify(bookRepository).save(book);
@@ -96,7 +97,7 @@ class BookControllerTest {
         Author author = new Author().setId("1").setName("name");
         Book book = new Book().setId("1").setTitle("title").setAuthor(author);
 
-        this.mvc.perform(delete("/books/" + book.getId()))
+        mvc.perform(delete("/books/" + book.getId()))
                 .andExpect(status().isOk());
 
         verify(bookRepository).deleteById(Long.valueOf(book.getId()));

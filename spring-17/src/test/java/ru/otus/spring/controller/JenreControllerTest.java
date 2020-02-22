@@ -1,5 +1,6 @@
 package ru.otus.spring.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,13 +34,14 @@ class JenreControllerTest {
     private CommentRepository commentRepository;
     @MockBean
     private AuthorRepository authorRepository;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void getAllJenre() throws Exception {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.findAll()).thenReturn(Collections.singletonList(jenre));
 
-        this.mvc.perform(get("/jenres"))
+        mvc.perform(get("/jenres"))
                 .andExpect(status().isOk());
 
         verify(jenreRepository).findAll();
@@ -49,7 +52,7 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.findById(jenre.getId())).thenReturn(Optional.of(jenre));
 
-        this.mvc.perform(get("/jenres/" + jenre.getId()))
+        mvc.perform(get("/jenres/" + jenre.getId()))
                 .andExpect(status().isOk());
 
         verify(jenreRepository).findById(jenre.getId());
@@ -60,9 +63,10 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        this.mvc.perform(post("/jenres")
-                .param("type", jenre.getType()))
-                .andExpect(status().isOk());
+        mvc.perform(post("/jenres")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(jenre)))
+                .andExpect(status().isCreated());
 
         verify(jenreRepository).save(jenre);
     }
@@ -72,7 +76,9 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        this.mvc.perform(patch("/jenres/" + jenre.getId()))
+        mvc.perform(put("/jenres/" + jenre.getId())
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(jenre)))
                 .andExpect(status().isOk());
 
         verify(jenreRepository).save(jenre);
@@ -82,7 +88,7 @@ class JenreControllerTest {
     void deleteJenre() throws Exception {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
 
-        this.mvc.perform(delete("/jenres/" + jenre.getId()))
+        mvc.perform(delete("/jenres/" + jenre.getId()))
                 .andExpect(status().isOk());
 
         verify(jenreRepository).deleteById(Long.valueOf(jenre.getId()));

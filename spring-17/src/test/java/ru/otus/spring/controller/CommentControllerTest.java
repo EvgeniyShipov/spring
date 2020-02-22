@@ -1,5 +1,6 @@
 package ru.otus.spring.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +35,7 @@ class CommentControllerTest {
     private CommentRepository commentRepository;
     @MockBean
     private AuthorRepository authorRepository;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void getAllComments() throws Exception {
@@ -59,14 +62,13 @@ class CommentControllerTest {
 
     @Test
     void createComment() throws Exception {
-        String bookId = "1";
         Comment comment = new Comment().setId("1").setMessage("message");
         when(commentRepository.save(comment)).thenReturn(comment);
 
         mvc.perform(post("/comments")
-                .param("message", comment.getMessage())
-                .param("book", bookId))
-                .andExpect(status().isOk());
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isCreated());
 
         verify(commentRepository).save(comment);
     }
@@ -76,7 +78,9 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(commentRepository.save(comment)).thenReturn(comment);
 
-        mvc.perform(patch("/comments/" + comment.getId()))
+        mvc.perform(put("/comments/" + comment.getId())
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(comment)))
                 .andExpect(status().isOk());
 
         verify(commentRepository).save(comment);
