@@ -43,7 +43,7 @@ public class BookController {
                 .body(result);
     }
 
-    @PutMapping("books/{id}")
+    @PostMapping("books/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable String id, @RequestBody Book book) {
         Book result = repository.save(book);
         log.info("Книга изменена: " + book);
@@ -53,7 +53,7 @@ public class BookController {
     @DeleteMapping("books/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable String id) {
         comments.deleteAllByBookId(id);
-        repository.deleteById(Long.valueOf(id));
+        repository.deleteById(id);
         log.warning("Книга удалена, id: " + id);
         return ok().build();
     }

@@ -76,7 +76,7 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        mvc.perform(put("/jenres/" + jenre.getId())
+        mvc.perform(post("/jenres/" + jenre.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(jenre)))
                 .andExpect(status().isOk());
@@ -91,6 +91,6 @@ class JenreControllerTest {
         mvc.perform(delete("/jenres/" + jenre.getId()))
                 .andExpect(status().isOk());
 
-        verify(jenreRepository).deleteById(Long.valueOf(jenre.getId()));
+        verify(jenreRepository).deleteById(jenre.getId());
     }
 }

@@ -40,7 +40,7 @@ public class CommentController {
                 .body(result);
     }
 
-    @PutMapping("comments/{id}")
+    @PostMapping("comments/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable String id, @RequestBody Comment comment) {
         Comment result = repository.save(comment);
         log.info("Комментарий изменен: " + comment);
@@ -49,7 +49,7 @@ public class CommentController {
 
     @DeleteMapping("comments/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable String id) {
-        repository.deleteById(Long.valueOf(id));
+        repository.deleteById(id);
         log.warning("Комментарий удален, id: " + id);
         return ok().build();
     }

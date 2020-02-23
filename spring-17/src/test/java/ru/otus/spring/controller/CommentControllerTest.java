@@ -78,7 +78,7 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(commentRepository.save(comment)).thenReturn(comment);
 
-        mvc.perform(put("/comments/" + comment.getId())
+        mvc.perform(post("/comments/" + comment.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(comment)))
                 .andExpect(status().isOk());
@@ -93,6 +93,6 @@ class CommentControllerTest {
         mvc.perform(delete("/comments/" + comment.getId()))
                 .andExpect(status().isOk());
 
-        verify(commentRepository).deleteById(Long.valueOf(comment.getId()));
+        verify(commentRepository).deleteById(comment.getId());
     }
 }

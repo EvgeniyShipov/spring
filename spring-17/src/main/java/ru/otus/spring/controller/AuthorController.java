@@ -42,7 +42,7 @@ public class AuthorController {
                 .body(result);
     }
 
-    @PutMapping("authors/{id}")
+    @PostMapping("authors/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable String id, @RequestBody Author author) {
         Author result = repository.save(author);
         log.info("Автор изменен: " + result);
@@ -52,7 +52,7 @@ public class AuthorController {
     @DeleteMapping("authors/{id}")
     public ResponseEntity<String> deleteAuthor(@PathVariable String id) {
         if (!books.existsByAuthorId(id)) {
-            repository.deleteById(Long.valueOf(id));
+            repository.deleteById(id);
             log.warning("Автор удален, id: " + id);
             return ok().build();
         } else {

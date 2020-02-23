@@ -42,7 +42,7 @@ public class JenreController {
                 .body(result);
     }
 
-    @PutMapping("jenres/{id}")
+    @PostMapping("jenres/{id}")
     public ResponseEntity<Jenre> updateJenre(@PathVariable String id, @RequestBody Jenre jenre) {
         Jenre result = repository.save(jenre);
         log.info("Жанр изменен: " + jenre);
@@ -52,7 +52,7 @@ public class JenreController {
     @DeleteMapping("jenres/{id}")
     public ResponseEntity<?> deleteJenre(@PathVariable String id) {
         if (!books.existsByJenreId(id)) {
-            repository.deleteById(Long.valueOf(id));
+            repository.deleteById(id);
             log.warning("Жанр удален, id: " + id);
             return ok().build();
         } else {

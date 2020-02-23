@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface JenreRepository extends MongoRepository<Jenre, Long> {
 
     Optional<Jenre> findById(String id);
+
+    void deleteById(String id);
 }

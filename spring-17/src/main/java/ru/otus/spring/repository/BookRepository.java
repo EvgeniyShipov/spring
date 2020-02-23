@@ -19,4 +19,6 @@ public interface BookRepository extends MongoRepository<Book, Long> {
     boolean existsByJenreId(String id);
 
     boolean existsByAuthorId(String id);
+
+    void deleteById(String id);
 }

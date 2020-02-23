@@ -76,7 +76,7 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(authorRepository.save(author)).thenReturn(author);
 
-        mvc.perform(put("/authors/" + author.getId())
+        mvc.perform(post("/authors/" + author.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(author)))
                 .andExpect(status().isOk());
@@ -91,6 +91,6 @@ class AuthorControllerTest {
         mvc.perform(delete("/authors/" + author.getId()))
                 .andExpect(status().isOk());
 
-        verify(authorRepository).deleteById(Long.valueOf(author.getId()));
+        verify(authorRepository).deleteById(author.getId());
     }
 }
