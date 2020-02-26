@@ -8,5 +8,5 @@ public interface JenreRepository extends ReactiveMongoRepository<Jenre, Long> {
 
     Mono<Jenre> findById(String id);
 
-    Mono<Void> deleteById(String id);
+    Mono<Jenre> deleteById(String id);
 }

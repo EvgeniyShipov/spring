@@ -15,6 +15,9 @@ import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.JenreRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,13 +47,17 @@ class AuthorRouterTest {
     @Test
     void getAllAuthors() {
         Author author = new Author().setId("1").setName("name");
-        when(authorRepository.findAll()).thenReturn(Flux.just(author));
+        List<Author> authors = Arrays.asList(author);
+        Flux<Author> authorFlux = Flux.fromIterable(authors);
+        when(authorRepository.findAll()).thenReturn(authorFlux);
 
         client.get()
                 .uri("/authors")
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBodyList(Author.class)
+                .isEqualTo(authors);
 
         verify(authorRepository).findAll();
     }
@@ -65,7 +72,9 @@ class AuthorRouterTest {
                 .uri("/authors/" + author.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Author.class)
+                .isEqualTo(author);
 
         verify(authorRepository).findById(author.getId());
     }
@@ -80,7 +89,9 @@ class AuthorRouterTest {
                 .bodyValue(author)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Author.class)
+                .isEqualTo(author);
 
         verify(authorRepository).save(author);
     }
@@ -95,7 +106,9 @@ class AuthorRouterTest {
                 .bodyValue(author)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Author.class)
+                .isEqualTo(author);
 
         verify(authorRepository).save(author);
     }
@@ -104,12 +117,15 @@ class AuthorRouterTest {
     void deleteAuthor() {
         Author author = new Author().setId("1").setName("name");
         when(bookRepository.existsByAuthorId(author.getId())).thenReturn(Mono.just(false));
+        when(authorRepository.deleteById(author.getId())).thenReturn(Mono.just(author));
 
         client.delete()
                 .uri("/authors/" + author.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Author.class)
+                .isEqualTo(author);
 
         verify(authorRepository).deleteById(author.getId());
     }

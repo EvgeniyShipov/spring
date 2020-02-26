@@ -11,7 +11,8 @@ import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.JenreRepository;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
+import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Log
 @Component
@@ -27,10 +28,8 @@ public class JenreHandler {
     }
 
     public Mono<ServerResponse> getJenre(ServerRequest request) {
-        return repository.findById(request.pathVariable("id"))
-                .flatMap(jenre -> ok().contentType(APPLICATION_JSON)
-                        .body(jenre, Jenre.class))
-                .switchIfEmpty(notFound().build());
+        return ok().contentType(APPLICATION_JSON)
+                .body(repository.findById(request.pathVariable("id")), Jenre.class);
     }
 
     public Mono<ServerResponse> createJenre(ServerRequest request) {
@@ -51,7 +50,7 @@ public class JenreHandler {
         return ok().contentType(APPLICATION_JSON)
                 .body(books.existsByJenreId(id)
                         .filter(isExists -> !isExists)
-                        .flatMap(isExists -> repository.deleteById(id)), Void.class)
+                        .flatMap(isExists -> repository.deleteById(id)), Jenre.class)
                 .switchIfEmpty(badRequest().build());
     }
 }

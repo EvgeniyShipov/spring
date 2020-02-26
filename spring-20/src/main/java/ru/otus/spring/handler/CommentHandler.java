@@ -10,7 +10,6 @@ import ru.otus.spring.domain.Comment;
 import ru.otus.spring.repository.CommentRepository;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Log
@@ -26,10 +25,8 @@ public class CommentHandler {
     }
 
     public Mono<ServerResponse> getComment(ServerRequest request) {
-        return repository.findById(request.pathVariable("id"))
-                .flatMap(comment -> ok().contentType(APPLICATION_JSON)
-                        .body(comment, Comment.class))
-                .switchIfEmpty(notFound().build());
+        return ok().contentType(APPLICATION_JSON)
+                .body(repository.findById(request.pathVariable("id")), Comment.class);
     }
 
     public Mono<ServerResponse> createComment(ServerRequest request) {
@@ -45,8 +42,7 @@ public class CommentHandler {
     }
 
     public Mono<ServerResponse> deleteComment(ServerRequest request) {
-        String id = request.pathVariable("id");
         return ok().contentType(APPLICATION_JSON)
-                .body(repository.deleteById(id), Void.class);
+                .body(repository.deleteById(request.pathVariable("id")), Comment.class);
     }
 }

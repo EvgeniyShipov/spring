@@ -15,6 +15,9 @@ import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.JenreRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,13 +46,18 @@ class JenreRouterTest {
     @Test
     void getAllJenre() {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
-        when(jenreRepository.findAll()).thenReturn(Flux.just(jenre));
+        List<Jenre> jenres = Arrays.asList(jenre);
+        Flux<Jenre> jenreFlux = Flux.fromIterable(jenres);
+
+        when(jenreRepository.findAll()).thenReturn(jenreFlux);
 
         client.get()
                 .uri("/jenres")
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBodyList(Jenre.class)
+                .isEqualTo(jenres);
 
         verify(jenreRepository).findAll();
     }
@@ -63,9 +71,11 @@ class JenreRouterTest {
                 .uri("/jenres/" + jenre.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Jenre.class)
+                .isEqualTo(jenre);
 
-        verify(authorRepository).findById(jenre.getId());
+        verify(jenreRepository).findById(jenre.getId());
     }
 
     @Test
@@ -78,7 +88,9 @@ class JenreRouterTest {
                 .bodyValue(jenre)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Jenre.class)
+                .isEqualTo(jenre);
 
         verify(jenreRepository).save(jenre);
     }
@@ -93,7 +105,9 @@ class JenreRouterTest {
                 .bodyValue(jenre)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Jenre.class)
+                .isEqualTo(jenre);
 
         verify(jenreRepository).save(jenre);
     }
@@ -102,13 +116,16 @@ class JenreRouterTest {
     void deleteJenre() {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(bookRepository.existsByJenreId(jenre.getId())).thenReturn(Mono.just(false));
+        when(jenreRepository.deleteById(jenre.getId())).thenReturn(Mono.just(jenre));
 
         client.delete()
                 .uri("/jenres/" + jenre.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Jenre.class)
+                .isEqualTo(jenre);
 
-        verify(authorRepository).deleteById(jenre.getId());
+        verify(jenreRepository).deleteById(jenre.getId());
     }
 }

@@ -12,5 +12,5 @@ public interface BookRepository extends ReactiveMongoRepository<Book, Long> {
 
     Mono<Boolean> existsByAuthorId(String aLong);
 
-    Mono<Void> deleteById(String id);
+    Mono<Book> deleteById(String id);
 }

@@ -11,7 +11,8 @@ import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
+import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Log
 @Component
@@ -27,10 +28,8 @@ public class AuthorHandler {
     }
 
     public Mono<ServerResponse> getAuthor(ServerRequest request) {
-        return repository.findById(request.pathVariable("id"))
-                .flatMap(author -> ok().contentType(APPLICATION_JSON)
-                        .body(author, Author.class))
-                .switchIfEmpty(notFound().build());
+        return ok().contentType(APPLICATION_JSON)
+                .body(repository.findById(request.pathVariable("id")), Author.class);
     }
 
     public Mono<ServerResponse> createAuthor(ServerRequest request) {
@@ -40,7 +39,6 @@ public class AuthorHandler {
     }
 
     public Mono<ServerResponse> updateAuthor(ServerRequest request) {
-        String id = request.pathVariable("id");
         return ok().contentType(APPLICATION_JSON)
                 .body(request.bodyToMono(Author.class)
                         .flatMap(repository::save), Author.class);
@@ -51,7 +49,7 @@ public class AuthorHandler {
         return ok().contentType(APPLICATION_JSON)
                 .body(books.existsByAuthorId(id)
                         .filter(isExists -> !isExists)
-                        .flatMap(isExists -> repository.deleteById(id)), Void.class)
+                        .flatMap(isExists -> repository.deleteById(id)), Author.class)
                 .switchIfEmpty(badRequest().build());
     }
 }

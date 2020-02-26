@@ -8,5 +8,5 @@ public interface AuthorRepository extends ReactiveMongoRepository<Author, Long> 
 
     Mono<Author> findById(String id);
 
-    Mono<Void> deleteById(String id);
+    Mono<Author> deleteById(String id);
 }

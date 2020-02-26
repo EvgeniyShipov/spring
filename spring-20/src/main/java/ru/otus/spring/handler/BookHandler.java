@@ -11,7 +11,8 @@ import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
+import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Log
 @Component
@@ -27,10 +28,8 @@ public class BookHandler {
     }
 
     public Mono<ServerResponse> getBook(ServerRequest request) {
-        return repository.findById(request.pathVariable("id"))
-                .flatMap(comment -> ok().contentType(APPLICATION_JSON)
-                        .body(comment, Book.class))
-                .switchIfEmpty(notFound().build());
+        return ok().contentType(APPLICATION_JSON)
+                .body(repository.findById(request.pathVariable("id")), Book.class);
     }
 
     public Mono<ServerResponse> createBook(ServerRequest request) {
@@ -50,7 +49,7 @@ public class BookHandler {
 
         return ok().contentType(APPLICATION_JSON)
                 .body(comments.deleteAllByBookId(id)
-                        .flatMap(result -> repository.deleteById(id)), Void.class)
+                        .then(repository.deleteById(id)), Book.class)
                 .switchIfEmpty(badRequest().build());
     }
 }

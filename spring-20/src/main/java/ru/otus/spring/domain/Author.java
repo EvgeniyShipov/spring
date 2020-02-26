@@ -15,8 +15,4 @@ public class Author {
     private String name;
     private String surname;
     private String patronymic;
-
-    public String getFullName() {
-        return String.format("%s %s %s", surname, name, patronymic);
-    }
 }

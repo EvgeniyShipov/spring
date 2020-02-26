@@ -16,6 +16,9 @@ import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.JenreRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,13 +48,17 @@ class CommentRouterTest {
     void getAllComments() {
         Book book = new Book().setId("1").setTitle("title");
         Comment comment = new Comment().setId("1").setMessage("message").setBook(book);
-        when(commentRepository.findAll()).thenReturn(Flux.just(comment));
+        List<Comment> comments = Arrays.asList(comment);
+        Flux<Comment> commentFlux = Flux.fromIterable(comments);
+        when(commentRepository.findAll()).thenReturn(commentFlux);
 
         client.get()
                 .uri("/comments")
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBodyList(Comment.class)
+                .isEqualTo(comments);
 
         verify(commentRepository).findAll();
     }
@@ -65,7 +72,9 @@ class CommentRouterTest {
                 .uri("/comments/" + comment.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Comment.class)
+                .isEqualTo(comment);
 
         verify(commentRepository).findById(comment.getId());
     }
@@ -80,7 +89,9 @@ class CommentRouterTest {
                 .bodyValue(comment)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Comment.class)
+                .isEqualTo(comment);
 
         verify(commentRepository).save(comment);
     }
@@ -95,19 +106,25 @@ class CommentRouterTest {
                 .bodyValue(comment)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Comment.class)
+                .isEqualTo(comment);
 
         verify(commentRepository).save(comment);
     }
 
     @Test
-    void deleteComment() throws Exception {
+    void deleteComment() {
         Comment comment = new Comment().setId("1").setMessage("message");
+        when(commentRepository.deleteById(comment.getId())).thenReturn(Mono.just(comment));
+
         client.delete()
                 .uri("/comments/" + comment.getId())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isOk()
+                .expectBody(Comment.class)
+                .isEqualTo(comment);
 
         verify(commentRepository).deleteById(comment.getId());
     }
