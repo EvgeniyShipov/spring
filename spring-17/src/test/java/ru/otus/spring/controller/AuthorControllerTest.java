@@ -76,7 +76,7 @@ class AuthorControllerTest {
         Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
         when(authorRepository.save(author)).thenReturn(author);
 
-        mvc.perform(post("/authors/" + author.getId())
+        mvc.perform(put("/authors/" + author.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(author)))
                 .andExpect(status().isOk());

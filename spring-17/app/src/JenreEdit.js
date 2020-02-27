@@ -37,8 +37,8 @@ class JenreEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/jenres', {
-            method: 'POST',
+        await fetch(item.id ? '/jenres/' + item.id : '/jenres', {
+            method: item.id ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

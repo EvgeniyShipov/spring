@@ -84,7 +84,7 @@ class BookControllerTest {
         Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
         when(bookRepository.save(book)).thenReturn(book);
 
-        mvc.perform(post("/books/" + book.getId())
+        mvc.perform(put("/books/" + book.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(book)))
                 .andExpect(status().isOk());

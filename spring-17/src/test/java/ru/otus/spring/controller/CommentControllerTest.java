@@ -78,7 +78,7 @@ class CommentControllerTest {
         Comment comment = new Comment().setId("1").setMessage("message");
         when(commentRepository.save(comment)).thenReturn(comment);
 
-        mvc.perform(post("/comments/" + comment.getId())
+        mvc.perform(put("/comments/" + comment.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(comment)))
                 .andExpect(status().isOk());

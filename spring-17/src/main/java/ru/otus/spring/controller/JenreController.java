@@ -42,7 +42,7 @@ public class JenreController {
                 .body(result);
     }
 
-    @PostMapping("jenres/{id}")
+    @PutMapping("jenres/{id}")
     public ResponseEntity<Jenre> updateJenre(@PathVariable String id, @RequestBody Jenre jenre) {
         Jenre result = repository.save(jenre);
         log.info("Жанр изменен: " + jenre);

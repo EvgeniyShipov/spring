@@ -42,7 +42,7 @@ public class AuthorController {
                 .body(result);
     }
 
-    @PostMapping("authors/{id}")
+    @PutMapping("authors/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable String id, @RequestBody Author author) {
         Author result = repository.save(author);
         log.info("Автор изменен: " + result);

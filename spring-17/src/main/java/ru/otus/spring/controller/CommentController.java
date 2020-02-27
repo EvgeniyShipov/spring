@@ -40,7 +40,7 @@ public class CommentController {
                 .body(result);
     }
 
-    @PostMapping("comments/{id}")
+    @PutMapping("comments/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable String id, @RequestBody Comment comment) {
         Comment result = repository.save(comment);
         log.info("Комментарий изменен: " + comment);

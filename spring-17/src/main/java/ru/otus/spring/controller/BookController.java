@@ -43,7 +43,7 @@ public class BookController {
                 .body(result);
     }
 
-    @PostMapping("books/{id}")
+    @PutMapping("books/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable String id, @RequestBody Book book) {
         Book result = repository.save(book);
         log.info("Книга изменена: " + book);

@@ -76,7 +76,7 @@ class JenreControllerTest {
         Jenre jenre = new Jenre().setId("1").setType("jenre");
         when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        mvc.perform(post("/jenres/" + jenre.getId())
+        mvc.perform(put("/jenres/" + jenre.getId())
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(jenre)))
                 .andExpect(status().isOk());

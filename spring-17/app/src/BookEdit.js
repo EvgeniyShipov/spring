@@ -20,6 +20,8 @@ class BookEdit extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAuthorsSelectChange = this.handleAuthorsSelectChange.bind(this);
+        this.handleJenreSelectChange = this.handleJenreSelectChange.bind(this);
     }
 
     async componentDidMount() {
@@ -54,12 +56,24 @@ class BookEdit extends Component {
         this.setState({item});
     }
 
+    handleAuthorsSelectChange(option) {
+        let item = {...this.state.item};
+        item.author = option.value;
+        this.setState({item});
+    }
+
+    handleJenreSelectChange(option) {
+        let item = {...this.state.item};
+        item.jenre = option.value;
+        this.setState({item});
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/books', {
-            method: 'POST',
+        await fetch(item.id ? '/books/' + item.id : '/books', {
+            method: item.id ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -84,11 +98,11 @@ class BookEdit extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="author">Author</Label>
-                        <Select options={authors}/>
+                        <Select options={authors} onChange={this.handleAuthorsSelectChange}/>
                     </FormGroup>
                     <FormGroup>
                         <Label for="jenre">Jenre</Label>
-                        <Select options={jenres}/>
+                        <Select options={jenres} onChange={this.handleJenreSelectChange}/>
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}

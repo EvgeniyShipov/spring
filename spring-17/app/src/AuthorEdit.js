@@ -39,8 +39,8 @@ class AuthorEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/authors', {
-            method: 'POST',
+        await fetch(item.id ? '/authors/' + item.id : '/authors', {
+            method: item.id ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

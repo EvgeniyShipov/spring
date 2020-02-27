@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
-import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select'
 
 class CommentEdit extends Component {
 
@@ -14,7 +14,7 @@ class CommentEdit extends Component {
         super(props);
         this.state = {books: [], item: this.emptyItem};
         this.handleChange = this.handleChange.bind(this);
-        this.onChange = this.onChange.bind(this);
+        this.handleBookSelectChange = this.handleBookSelectChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -42,18 +42,18 @@ class CommentEdit extends Component {
         this.setState({item: item});
     }
 
-    onChange(value) {
-        let {item} = this.state;
-        item.book = value;
-        this.setState({item: item});
+    handleBookSelectChange(option) {
+        let item = {...this.state.item};
+        item.book = option.value;
+        this.setState({item});
     }
 
     async handleSubmit(event) {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/comments', {
-            method: 'POST',
+        await fetch(item.id ? '/comments/' + item.id : '/comments', {
+            method: item.id ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ class CommentEdit extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
                         <Label for="book">Book</Label>
-                        <CreatableSelect options={books} onChange={this.onChange}/>
+                        <Select options={books} onChange={this.handleBookSelectChange}/>
                     </FormGroup>
                     <FormGroup>
                         <Label for="message">Message</Label>
