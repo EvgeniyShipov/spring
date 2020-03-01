@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.spring.TestConfig;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.repository.*;
 import ru.otus.spring.service.LibraryService;
-import ru.otus.spring.service.LibraryUserDetailsService;
 
 import java.util.Collections;
 
@@ -22,25 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WithMockUser(username = "user", authorities = {"ROLE_USER"})
 @WebMvcTest(AuthorController.class)
+@ContextConfiguration(classes = TestConfig.class)
 class AuthorControllerTest {
 
     @Autowired
     private MockMvc mvc;
     @MockBean
     private LibraryService service;
-
-    @MockBean
-    private BookRepository bookRepository;
-    @MockBean
-    private JenreRepository jenreRepository;
-    @MockBean
-    private CommentRepository commentRepository;
-    @MockBean
-    private AuthorRepository authorRepository;
-    @MockBean
-    private LibraryUserDetailsService libraryUserDetailsService;
-    @MockBean
-    private UserRepository userRepository;
 
     @Test
     void getAllAuthors() throws Exception {

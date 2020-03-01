@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.spring.TestConfig;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
-import ru.otus.spring.repository.*;
 import ru.otus.spring.service.LibraryService;
-import ru.otus.spring.service.LibraryUserDetailsService;
 
 import java.util.Collections;
 
@@ -23,24 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WithMockUser(username = "user", authorities = {"ROLE_USER"})
 @WebMvcTest(CommentController.class)
+@ContextConfiguration(classes = TestConfig.class)
 class CommentControllerTest {
 
     @Autowired
     private MockMvc mvc;
     @MockBean
     private LibraryService service;
-    @MockBean
-    private BookRepository bookRepository;
-    @MockBean
-    private JenreRepository jenreRepository;
-    @MockBean
-    private CommentRepository commentRepository;
-    @MockBean
-    private AuthorRepository authorRepository;
-    @MockBean
-    private LibraryUserDetailsService libraryUserDetailsService;
-    @MockBean
-    private UserRepository userRepository;
 
     @Test
     void getAllComments() throws Exception {
