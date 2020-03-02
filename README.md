@@ -11,3 +11,4 @@
 8. [Spring Data для подключения к нереляционным БД](https://github.com/EvgeniyShipov/spring/tree/master/spring-13) 
 9. [Spring MVC View](https://github.com/EvgeniyShipov/spring/tree/master/spring-16) 
 10. [Современные приложения на Spring MVC](https://github.com/EvgeniyShipov/spring/tree/master/spring-17) 
+11. [Spring WebFlux](https://github.com/EvgeniyShipov/spring/tree/master/spring-20) 
