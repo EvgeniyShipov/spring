@@ -28,7 +28,7 @@ public class CommentController {
     }
 
     @GetMapping("comments/{id}")
-    public String getComment(@PathVariable String id, Model model) {
+    public String getComment(@PathVariable long id, Model model) {
         Comment comment = service.getComment(id);
         model.addAttribute("comment", comment);
         return "comment";
@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @PostMapping("comments/create")
-    public String createComment(String message, String book, Model model) {
+    public String createComment(String message, long book, Model model) {
         Comment comment = service.createComment(message, book);
         log.info("Добавлен новый комментарий: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());
@@ -50,7 +50,7 @@ public class CommentController {
     }
 
     @PostMapping("comments/update/{id}")
-    public String updateComment(@PathVariable String id, String message, Model model) {
+    public String updateComment(@PathVariable long id, String message, Model model) {
         Comment comment = service.getComment(id);
         comment.setMessage(message);
         service.updateComment(comment);
@@ -60,7 +60,7 @@ public class CommentController {
     }
 
     @PostMapping("comments/delete/{id}")
-    public String deleteComment(@PathVariable String id, Model model) {
+    public String deleteComment(@PathVariable long id, Model model) {
         Comment comment = service.deleteComment(id);
         log.warning("Комментарий удален: " + comment.getMessage());
         model.addAttribute("comments", service.getAllComments());

@@ -27,7 +27,7 @@ public class JenreController {
     }
 
     @GetMapping("jenres/{id}")
-    public String getJenre(@PathVariable String id, Model model) {
+    public String getJenre(@PathVariable long id, Model model) {
         Jenre jenre = service.getJenre(id);
         model.addAttribute("jenre", jenre);
         return "jenre";
@@ -47,7 +47,7 @@ public class JenreController {
     }
 
     @PostMapping("jenres/update/{id}")
-    public String updateJenre(@PathVariable String id, String type, Model model) {
+    public String updateJenre(@PathVariable long id, String type, Model model) {
         Jenre jenre = service.getJenre(id);
         jenre.setType(type);
         service.updateJenre(jenre);
@@ -57,7 +57,7 @@ public class JenreController {
     }
 
     @PostMapping("jenres/delete/{id}")
-    public String deleteJenre(@PathVariable String id, Model model) {
+    public String deleteJenre(@PathVariable long id, Model model) {
         Jenre jenre = service.deleteJenre(id);
         log.warning("Жанр удален: " + jenre.getType());
         model.addAttribute("jenres", service.getAllJenre());

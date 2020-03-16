@@ -2,6 +2,9 @@ package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ public class BookController {
 
     private final LibraryService service;
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @GetMapping("books")
     public String getAllBooks(Model model) {
         List<Book> books = service.getAllBooks();
@@ -28,8 +32,9 @@ public class BookController {
         return "books";
     }
 
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @GetMapping("books/{id}")
-    public String getBook(@PathVariable String id, Model model) {
+    public String getBook(@PathVariable long id, Model model) {
         Book book = service.getBook(id);
         List<Author> authors = service.getAllAuthors();
         List<Jenre> jenres = service.getAllJenre();
@@ -39,6 +44,7 @@ public class BookController {
         return "book";
     }
 
+    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
     @GetMapping("books/create")
     public String createBook(Book book, Model model) {
         List<Author> authors = service.getAllAuthors();
@@ -48,16 +54,18 @@ public class BookController {
         return "book_new";
     }
 
+    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
     @PostMapping("books/create")
-    public String createBook(String title, String author, String jenre, Model model) {
+    public String createBook(String title, long author, long jenre, Model model) {
         Book book = service.createBook(title, author, jenre);
         log.info(String.format("Добавлена новая книга: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());
         return "redirect:/books";
     }
 
+    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
     @PostMapping("books/update/{id}")
-    public String updateBook(@PathVariable String id, String title, String author, String jenre, Model model) {
+    public String updateBook(@PathVariable long id, String title, long author, long jenre, Model model) {
         Book book = service.getBook(id);
         book.setTitle(title);
         book.setAuthor(service.getAuthor(author));
@@ -68,8 +76,9 @@ public class BookController {
         return "redirect:/books";
     }
 
+    @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
     @PostMapping("books/delete/{id}")
-    public String deleteBook(@PathVariable String id, Model model) {
+    public String deleteBook(@PathVariable long id, Model model) {
         Book book = service.deleteBook(id);
         log.warning(String.format("Книга удалена: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());

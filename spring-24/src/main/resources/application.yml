@@ -1,8 +1,15 @@
 spring:
-  data:
-    mongodb:
-      port: 0
-      database: library
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+    schema: schema.sql
+    data: data.sql
+    initialization-mode: always
 
-server:
-  port: 8080
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true

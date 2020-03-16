@@ -1,5 +1,11 @@
 spring:
-  data:
-    mongodb:
-      port: 0
-      database: library
+  datasource:
+    url: jdbc:h2:mem:testdb
+    initialization-mode: always
+    data: data.sql
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true

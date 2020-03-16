@@ -26,13 +26,13 @@ public class SimpleLibraryService implements LibraryService {
         return bookRepository.findAll();
     }
 
-    public Book getBook(String id) {
+    public Book getBook(long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("Книга не найдена"));
     }
 
     @Override
-    public List<Book> getBookByAuthor(String idAuthor) {
+    public List<Book> getBookByAuthor(long idAuthor) {
         Author author = getAuthor(idAuthor);
         return bookRepository.findByAuthor(author);
     }
@@ -42,7 +42,7 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Override
-    public List<Book> getBookByJenre(String idJenre) {
+    public List<Book> getBookByJenre(long idJenre) {
         Jenre jenre = getJenre(idJenre);
         return bookRepository.findByJenre(jenre);
     }
@@ -51,7 +51,7 @@ public class SimpleLibraryService implements LibraryService {
         return jenreRepository.findAll();
     }
 
-    public List<Comment> getCommentsByBookId(String idBook) {
+    public List<Comment> getCommentsByBookId(long idBook) {
         return commentRepository.findByBookId(idBook);
     }
 
@@ -60,7 +60,7 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Transactional
-    public Book deleteBook(String id) {
+    public Book deleteBook(long id) {
         commentRepository.deleteAllByBookId(id);
         Book book = getBook(id);
         bookRepository.delete(book);
@@ -68,7 +68,7 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Transactional
-    public Book createBook(String title, String idAuthor, String idJenre) {
+    public Book createBook(String title, long idAuthor, long idJenre) {
         Book book = new Book()
                 .setTitle(title)
                 .setAuthor(getAuthor(idAuthor))
@@ -91,7 +91,7 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Transactional
-    public Comment createComment(String message, String idBook) {
+    public Comment createComment(String message, long idBook) {
         Book book = getBook(idBook);
         Comment comment = new Comment()
                 .setMessage(message)
@@ -101,19 +101,19 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Override
-    public Author getAuthor(String id) {
+    public Author getAuthor(long id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("Автор не найден"));
     }
 
     @Override
-    public Jenre getJenre(String id) {
+    public Jenre getJenre(long id) {
         return jenreRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("Жанр не найден"));
     }
 
     @Override
-    public Jenre deleteJenre(String id) {
+    public Jenre deleteJenre(long id) {
         if (bookRepository.existsById(Long.valueOf(id))) {
             Jenre jenre = getJenre(id);
             jenreRepository.delete(jenre);
@@ -123,20 +123,20 @@ public class SimpleLibraryService implements LibraryService {
     }
 
     @Override
-    public Comment getComment(String id) {
+    public Comment getComment(long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("Жанр не найден"));
     }
 
     @Override
-    public Comment deleteComment(String id) {
+    public Comment deleteComment(long id) {
         Comment comment = getComment(id);
         commentRepository.delete(comment);
         return comment;
     }
 
     @Override
-    public Author deleteAuthor(String id) {
+    public Author deleteAuthor(long id) {
         if (bookRepository.existsById(Long.valueOf(id))) {
             Author author = getAuthor(id);
             authorRepository.delete(author);

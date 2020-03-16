@@ -11,41 +11,41 @@ public interface LibraryService {
 
     List<Book> getAllBooks();
 
-    Book getBook(String id);
+    Book getBook(long id);
 
-    List<Book> getBookByAuthor(String idAuthor);
+    List<Book> getBookByAuthor(long idAuthor);
 
     List<Author> getAllAuthors();
 
-    List<Book> getBookByJenre(String idJenre);
+    List<Book> getBookByJenre(long idJenre);
 
     List<Jenre> getAllJenre();
 
     List<Comment> getAllComments();
 
-    List<Comment> getCommentsByBookId(String idBook);
+    List<Comment> getCommentsByBookId(long idBook);
 
-    Book deleteBook(String id);
+    Book deleteBook(long id);
 
-    Book createBook(String title, String idAuthor, String idJenre);
+    Book createBook(String title, long idAuthor, long idJenre);
 
     Author createAuthor(String name, String surname, String patronymic);
 
     Jenre createJenre(String type);
 
-    Comment createComment(String message, String idBook);
+    Comment createComment(String message, long idBook);
 
-    Author getAuthor(String id);
+    Author getAuthor(long id);
 
-    Jenre getJenre(String id);
+    Jenre getJenre(long id);
 
-    Jenre deleteJenre(String id);
+    Jenre deleteJenre(long id);
 
-    Comment getComment(String id);
+    Comment getComment(long id);
 
-    Comment deleteComment(String id);
+    Comment deleteComment(long id);
 
-    Author deleteAuthor(String id);
+    Author deleteAuthor(long id);
 
     void updateAuthor(Author author);
 
