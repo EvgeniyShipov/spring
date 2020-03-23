@@ -2,68 +2,59 @@ package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import ru.otus.spring.domain.Book;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Comment;
-import ru.otus.spring.service.LibraryService;
+import ru.otus.spring.repository.CommentRepository;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @Log
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final LibraryService service;
+    private final CommentRepository repository;
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @GetMapping("comments")
-    public String getAllComments(Model model) {
-        List<Comment> comments = service.getAllComments();
-        model.addAttribute("comments", comments);
-        return "comments";
+    public List<Comment> getAllComments() {
+        return repository.findAll();
     }
 
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @GetMapping("comments/{id}")
-    public String getComment(@PathVariable long id, Model model) {
-        Comment comment = service.getComment(id);
-        model.addAttribute("comment", comment);
-        return "comment";
+    public Comment getComment(@PathVariable long id) {
+        return repository.findById(id)
+                .orElse(null);
     }
 
-    @GetMapping("comments/create")
-    public String createComment(Comment comment, Model model) {
-        List<Book> books = service.getAllBooks();
-        model.addAttribute("books", books);
-        return "comment_new";
+    @PreAuthorize("hasPermission(#comment, 'WRITE')")
+    @PostMapping("comments")
+    public Comment createComment(@RequestBody Comment comment) {
+        Comment result = repository.save(comment);
+        log.info("Добавлен новый комментарий: " + comment);
+        return result;
     }
 
-    @PostMapping("comments/create")
-    public String createComment(String message, long book, Model model) {
-        Comment comment = service.createComment(message, book);
-        log.info("Добавлен новый комментарий: " + comment.getMessage());
-        model.addAttribute("comments", service.getAllComments());
-        return "redirect:/comments";
+    @PreAuthorize("hasPermission(#comment, 'WRITE')")
+    @PutMapping("comments/{id}")
+    public Comment updateComment(@PathVariable long id, @RequestBody Comment comment) {
+        Comment result = repository.save(comment);
+        log.info("Комментарий изменен: " + comment);
+        return result;
     }
 
-    @PostMapping("comments/update/{id}")
-    public String updateComment(@PathVariable long id, String message, Model model) {
-        Comment comment = service.getComment(id);
-        comment.setMessage(message);
-        service.updateComment(comment);
-        log.info("Комментарий изменен: " + comment.getMessage());
-        model.addAttribute("comments", service.getAllComments());
-        return "redirect:/comments";
-    }
-
-    @PostMapping("comments/delete/{id}")
-    public String deleteComment(@PathVariable long id, Model model) {
-        Comment comment = service.deleteComment(id);
-        log.warning("Комментарий удален: " + comment.getMessage());
-        model.addAttribute("comments", service.getAllComments());
-        return "redirect:/comments";
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("comments/{id}")
+    public ResponseEntity<String> deleteComment(@PathVariable long id) {
+        repository.deleteById(id);
+        log.warning("Комментарий удален, id: " + id);
+        return ok("Комментарий удален");
     }
 }

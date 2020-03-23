@@ -1,24 +1,24 @@
 package ru.otus.spring.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.TestConfig;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.service.LibraryService;
+import ru.otus.spring.repository.AuthorRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(username = "user", authorities = {"ROLE_USER"})
 @WebMvcTest(AuthorController.class)
@@ -27,84 +27,65 @@ class AuthorControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @MockBean
-    private LibraryService service;
+    @Autowired
+    private AuthorRepository authorRepository;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void getAllAuthors() throws Exception {
         Author author = new Author().setId(1).setName("name");
-        when(service.getAllAuthors()).thenReturn(Collections.singletonList(author));
+        when(authorRepository.findAll()).thenReturn(Collections.singletonList(author));
 
-        this.mvc.perform(get("/authors"))
-                .andExpect(matchAll(
-                        status().isOk(),
-                        model().attributeExists("authors"),
-                        view().name("authors")));
+        mvc.perform(get("/authors"))
+                .andExpect(status().isOk());
 
-        verify(service).getAllAuthors();
+        verify(authorRepository).findAll();
     }
 
     @Test
     void getAuthor() throws Exception {
         Author author = new Author().setId(1).setName("name");
-        when(service.getAuthor(author.getId())).thenReturn(author);
+        when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
 
-        this.mvc.perform(get("/authors/" + author.getId()))
-                .andExpect(matchAll(
-                        status().isOk(),
-                        model().attributeExists("author"),
-                        view().name("author")));
+        mvc.perform(get("/authors/" + author.getId()))
+                .andExpect(status().isOk());
 
-        verify(service).getAuthor(author.getId());
+        verify(authorRepository).findById(author.getId());
     }
 
     @Test
     void createAuthor() throws Exception {
         Author author = new Author().setId(1).setName("name").setSurname("surname").setPatronymic("patronymic");
+        when(authorRepository.save(author)).thenReturn(author);
 
-        this.mvc.perform(get("/authors/create")
-                .param("name", author.getName()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("author_new"));
-    }
+        mvc.perform(post("/authors")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(author)))
+                .andExpect(status().isCreated());
 
-    @Test
-    void createAuthor2() throws Exception {
-        Author author = new Author().setId(1).setName("name").setSurname("surname").setPatronymic("patronymic");
-        when(service.createAuthor(author.getName(), author.getSurname(), author.getPatronymic())).thenReturn(author);
-
-        this.mvc.perform(post("/authors/create")
-                .param("name", author.getName())
-                .param("surname", author.getSurname())
-                .param("patronymic", author.getPatronymic()))
-                .andExpect(redirectedUrl("/authors"));
-
-        verify(service).createAuthor(author.getName(), author.getSurname(), author.getPatronymic());
+        verify(authorRepository).save(author);
     }
 
     @Test
     void updateAuthor() throws Exception {
         Author author = new Author().setId(1).setName("name").setSurname("surname").setPatronymic("patronymic");
-        when(service.getAuthor(author.getId())).thenReturn(author);
+        when(authorRepository.save(author)).thenReturn(author);
 
-        this.mvc.perform(post("/authors/update/" + author.getId())
-                .param("name", author.getName())
-                .param("surname", author.getSurname())
-                .param("patronymic", author.getPatronymic()))
-                .andExpect(redirectedUrl("/authors"));
+        mvc.perform(put("/authors/" + author.getId())
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(author)))
+                .andExpect(status().isOk());
 
-        verify(service).getAuthor(author.getId());
-        verify(service).updateAuthor(author);
+        verify(authorRepository).save(author);
     }
 
     @Test
     void deleteAuthor() throws Exception {
         Author author = new Author().setId(1).setName("name");
-        when(service.deleteAuthor(author.getId())).thenReturn(author);
 
-        this.mvc.perform(post("/authors/delete/" + author.getId()))
-                .andExpect(redirectedUrl("/authors"));
+        mvc.perform(delete("/authors/" + author.getId()))
+                .andExpect(status().isOk());
 
-        verify(service).deleteAuthor(author.getId());
+        verify(authorRepository).deleteById(author.getId());
     }
 }

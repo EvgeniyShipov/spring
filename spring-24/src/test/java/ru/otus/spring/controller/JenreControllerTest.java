@@ -1,24 +1,24 @@
 package ru.otus.spring.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.TestConfig;
 import ru.otus.spring.domain.Jenre;
-import ru.otus.spring.service.LibraryService;
+import ru.otus.spring.repository.JenreRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(username = "user", authorities = {"ROLE_USER"})
 @WebMvcTest(JenreController.class)
@@ -27,83 +27,65 @@ class JenreControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @MockBean
-    private LibraryService service;
+    @Autowired
+    private JenreRepository jenreRepository;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void getAllJenre() throws Exception {
         Jenre jenre = new Jenre().setId(1).setType("jenre");
-        when(service.getAllJenre()).thenReturn(Collections.singletonList(jenre));
+        when(jenreRepository.findAll()).thenReturn(Collections.singletonList(jenre));
 
-        this.mvc.perform(get("/jenres"))
-                .andExpect(matchAll(
-                        status().isOk(),
-                        model().size(1),
-                        model().attributeExists("jenres"),
-                        view().name("jenres")));
+        mvc.perform(get("/jenres"))
+                .andExpect(status().isOk());
 
-        verify(service).getAllJenre();
+        verify(jenreRepository).findAll();
     }
 
     @Test
     void getJenre() throws Exception {
         Jenre jenre = new Jenre().setId(1).setType("jenre");
-        when(service.getJenre(jenre.getId())).thenReturn(jenre);
+        when(jenreRepository.findById(jenre.getId())).thenReturn(Optional.of(jenre));
 
-        this.mvc.perform(get("/jenres/" + jenre.getId()))
-                .andExpect(matchAll(
-                        status().isOk(),
-                        model().size(1),
-                        model().attributeExists("jenre"),
-                        view().name("jenre")));
+        mvc.perform(get("/jenres/" + jenre.getId()))
+                .andExpect(status().isOk());
 
-        verify(service).getJenre(jenre.getId());
+        verify(jenreRepository).findById(jenre.getId());
     }
 
     @Test
     void createJenre() throws Exception {
         Jenre jenre = new Jenre().setId(1).setType("jenre");
+        when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        this.mvc.perform(get("/jenres/create")
-                .param("jenre", jenre.toString()))
-                .andExpect(matchAll(
-                        status().isOk(),
-                        view().name("jenre_new")));
-    }
+        mvc.perform(post("/jenres")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(jenre)))
+                .andExpect(status().isCreated());
 
-    @Test
-    void createJenre2() throws Exception {
-        Jenre jenre = new Jenre().setId(1).setType("jenre");
-        when(service.createJenre(jenre.getType())).thenReturn(jenre);
-
-        this.mvc.perform(post("/jenres/create")
-                .param("type", jenre.getType()))
-                .andExpect(redirectedUrl("/jenres"));
-
-        verify(service).createJenre(jenre.getType());
+        verify(jenreRepository).save(jenre);
     }
 
     @Test
     void updateJenre() throws Exception {
         Jenre jenre = new Jenre().setId(1).setType("jenre");
-        when(service.getJenre(jenre.getId())).thenReturn(jenre);
+        when(jenreRepository.save(jenre)).thenReturn(jenre);
 
-        this.mvc.perform(post("/jenres/update/" + jenre.getId()))
-                .andExpect(redirectedUrl("/jenres"));
+        mvc.perform(put("/jenres/" + jenre.getId())
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(jenre)))
+                .andExpect(status().isOk());
 
-        verify(service).getJenre(jenre.getId());
-        verify(service).updateJenre(jenre);
-        verify(service).getAllJenre();
+        verify(jenreRepository).save(jenre);
     }
 
     @Test
     void deleteJenre() throws Exception {
         Jenre jenre = new Jenre().setId(1).setType("jenre");
-        when(service.deleteJenre(jenre.getId())).thenReturn(jenre);
 
-        this.mvc.perform(post("/jenres/delete/" + jenre.getId()))
-                .andExpect(redirectedUrl("/jenres"));
+        mvc.perform(delete("/jenres/" + jenre.getId()))
+                .andExpect(status().isOk());
 
-        verify(service).deleteJenre(jenre.getId());
+        verify(jenreRepository).deleteById(jenre.getId());
     }
 }

@@ -2,65 +2,66 @@ package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Jenre;
-import ru.otus.spring.service.LibraryService;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.JenreRepository;
 
-import java.util.List;
+import java.util.Collection;
+
+import static org.springframework.http.ResponseEntity.badRequest;
+import static org.springframework.http.ResponseEntity.ok;
 
 @Log
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class JenreController {
 
-    private final LibraryService service;
+    private final JenreRepository repository;
+    private final BookRepository books;
 
+    @PostFilter("hasPermission(filterObject, 'READ')")
     @GetMapping("jenres")
-    public String getAllJenre(Model model) {
-        List<Jenre> jenre = service.getAllJenre();
-        model.addAttribute("jenres", jenre);
-        return "jenres";
+    public Collection<Jenre> getAllJenre() {
+        return repository.findAll();
     }
 
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @GetMapping("jenres/{id}")
-    public String getJenre(@PathVariable long id, Model model) {
-        Jenre jenre = service.getJenre(id);
-        model.addAttribute("jenre", jenre);
-        return "jenre";
+    public Jenre getJenre(@PathVariable long id) {
+        return repository.findById(id)
+                .orElse(null);
     }
 
-    @GetMapping("jenres/create")
-    public String createJenre(Jenre jenre, Model model) {
-        return "jenre_new";
+    @PreAuthorize("hasPermission(#jenre, 'WRITE')")
+    @PostMapping("jenres")
+    public Jenre createJenre(@RequestBody Jenre jenre) {
+        Jenre result = repository.save(jenre);
+        log.info("Добавлен новый жанр: " + result);
+        return result;
     }
 
-    @PostMapping("jenres/create")
-    public String createJenre(String type, Model model) {
-        Jenre jenre = service.createJenre(type);
-        log.warning("Добавлен новый жанр: " + jenre.getType());
-        model.addAttribute("jenres", service.getAllJenre());
-        return "redirect:/jenres";
+    @PreAuthorize("hasPermission(#jenre, 'WRITE')")
+    @PutMapping("jenres/{id}")
+    public Jenre updateJenre(@PathVariable long id, @RequestBody Jenre jenre) {
+        Jenre result = repository.save(jenre);
+        log.info("Жанр изменен: " + jenre);
+        return result;
     }
 
-    @PostMapping("jenres/update/{id}")
-    public String updateJenre(@PathVariable long id, String type, Model model) {
-        Jenre jenre = service.getJenre(id);
-        jenre.setType(type);
-        service.updateJenre(jenre);
-        log.info("Жанр изменен: " + jenre.getType());
-        model.addAttribute("jenres", service.getAllJenre());
-        return "redirect:/jenres";
-    }
-
-    @PostMapping("jenres/delete/{id}")
-    public String deleteJenre(@PathVariable long id, Model model) {
-        Jenre jenre = service.deleteJenre(id);
-        log.warning("Жанр удален: " + jenre.getType());
-        model.addAttribute("jenres", service.getAllJenre());
-        return "redirect:/jenres";
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("jenres/{id}")
+    public ResponseEntity<String> deleteJenre(@PathVariable long id) {
+        if (!books.existsByJenreId(id)) {
+            repository.deleteById(id);
+            log.warning("Жанр удален, id: " + id);
+            return ok("Жанр удален");
+        } else {
+            return badRequest().body("Нельзя удалить жанр, оставив книги");
+        }
     }
 }
