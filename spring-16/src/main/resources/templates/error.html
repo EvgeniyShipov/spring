@@ -13,7 +13,7 @@
 
 <div>
     <h2>Error:</h2>
-    <p th:text="${exception.getMessage()}">...</p>
+    <p th:text="${error}? Forbidden : ${exception.getMessage()}">...</p>
 </div>
 <h4>
     <a th:href="@{/}" href="index.html">main view</a>

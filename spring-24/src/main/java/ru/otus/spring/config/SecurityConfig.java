@@ -17,13 +17,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/**").hasAnyRole("USER", "EDITOR", "ADMIN")
-                    .anyRequest().authenticated()
-                .and()
                     .formLogin()
                     .successForwardUrl("/")
                     .permitAll()
+                .and()
+                    .authorizeRequests().antMatchers("/books", "/authors", "/comments", "/jenres", "/error", "/login", "/logout")
+                    .hasAnyRole("USER", "EDITOR", "ADMIN")
+                .and()
+                    .authorizeRequests().antMatchers("/*/create", "/*/update/*", "/*/*")
+                    .hasAnyRole("EDITOR", "ADMIN")
+                .and()
+                    .authorizeRequests().antMatchers("/*/delete/*")
+                    .hasAnyRole("ADMIN")
                 .and()
                     .rememberMe()
                     .key("salt")
@@ -42,10 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin").password("password").roles("ADMIN")
-                .and()
-                .withUser("user").password("password").roles("USER")
-                .and()
+                .withUser("admin").password("password").roles("ADMIN").and()
+                .withUser("user").password("password").roles("USER").and()
                 .withUser("editor").password("password").roles("EDITOR");
     }
 }
