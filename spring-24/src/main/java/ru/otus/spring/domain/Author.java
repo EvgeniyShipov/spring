@@ -2,25 +2,18 @@ package ru.otus.spring.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
-@Table(name = "authors")
 @Accessors(chain = true)
+@Document(collection = "authors")
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private long id;
-    @Column(name = "name", nullable = false)
+    private String id;
     private String name;
-    @Column(name = "surname", nullable = false)
     private String surname;
-    @Column(name = "patronymic", nullable = false)
     private String patronymic;
 
     public String getFullName() {

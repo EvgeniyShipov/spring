@@ -2,26 +2,18 @@ package ru.otus.spring.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
-
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity
-@Table(name = "comments")
 @Accessors(chain = true)
+@Document(collection = "comments")
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private long id;
-
-    @Column(name = "message", nullable = false)
+    private String id;
     private String message;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "id_book")
+    @DBRef
     private Book book;
 }

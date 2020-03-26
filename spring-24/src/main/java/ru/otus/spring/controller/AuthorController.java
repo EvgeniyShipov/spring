@@ -2,66 +2,65 @@ package ru.otus.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.repository.AuthorRepository;
-import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.service.LibraryService;
 
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.badRequest;
-import static org.springframework.http.ResponseEntity.ok;
-
 @Log
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class AuthorController {
 
-    private final AuthorRepository repository;
-    private final BookRepository books;
+    private final LibraryService service;
 
-    @PostFilter("hasPermission(filterObject, 'READ')")
     @GetMapping("authors")
-    public List<Author> getAllAuthors() {
-        return repository.findAll();
+    public String getAllAuthors(Model model) {
+        List<Author> authors = service.getAllAuthors();
+        model.addAttribute("authors", authors);
+        return "authors";
     }
 
-    @PostAuthorize("hasPermission(returnObject, 'READ')")
     @GetMapping("authors/{id}")
-    public Author getAuthor(@PathVariable long id) {
-        return repository.findById(id)
-                .orElse(null);
+    public String getAuthor(@PathVariable String id, Model model) {
+        Author author = service.getAuthor(id);
+        model.addAttribute("author", author);
+        return "author";
     }
 
-    @PreAuthorize("hasPermission(#author, 'WRITE')")
-    @PostMapping("authors")
-    public Author createAuthor(@RequestBody Author author) {
-        Author result = repository.save(author);
-        log.info("Добавлен новый автор: " + result);
-        return result;
+    @GetMapping("authors/create")
+    public String createAuthor(Author author, Model model) {
+        return "author_new";
     }
 
-    @PreAuthorize("hasPermission(#author, 'WRITE')")
-    @PutMapping("authors/{id}")
-    public Author updateAuthor(@PathVariable long id, @RequestBody Author author) {
-        Author result = repository.save(author);
-        log.info("Автор изменен: " + result);
-        return result;
+    @PostMapping("authors/create")
+    public String createAuthor(String name, String surname, String patronymic, Model model) {
+        Author author = service.createAuthor(name, surname, patronymic);
+        log.info("Добавлен новый автор: " + author.getFullName());
+        model.addAttribute("authors", service.getAllAuthors());
+        return "redirect:/authors";
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("authors/{id}")
-    public ResponseEntity<String> deleteAuthor(@PathVariable long id) {
-        if (!books.existsByAuthorId(id)) {
-            repository.deleteById(id);
-            log.warning("Автор удален, id: " + id);
-            return ok("Автор удален");
-        } else {
-            return badRequest().body("Нельзя удалить автора, оставив книги");
-        }
+    @PostMapping("authors/update/{id}")
+    public String updateAuthor(@PathVariable String id, String name, String surname, String patronymic, Model model) {
+        Author author = service.getAuthor(id);
+        author.setName(name).setSurname(surname).setPatronymic(patronymic);
+        service.updateAuthor(author);
+        log.info("Автор изменен: " + author.getFullName());
+        model.addAttribute("authors", service.getAllAuthors());
+        return "redirect:/authors";
+    }
+
+    @PostMapping("authors/delete/{id}")
+    public String deleteAuthor(@PathVariable String id, Model model) {
+        Author author = service.deleteAuthor(id);
+        log.warning("Автор удален: " + author.getFullName());
+        model.addAttribute("authors", service.getAllAuthors());
+        return "redirect:/authors";
     }
 }

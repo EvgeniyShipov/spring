@@ -2,6 +2,7 @@ package ru.otus.spring;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
@@ -18,4 +19,6 @@ public class TestConfig {
     private CommentRepository commentRepository;
     @MockBean
     private AuthorRepository authorRepository;
+    @MockBean
+    private UserDetailsService libraryUserDetailsService;
 }

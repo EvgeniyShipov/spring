@@ -1,25 +1,25 @@
 package ru.otus.spring.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.TestConfig;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
-import ru.otus.spring.repository.CommentRepository;
+import ru.otus.spring.service.LibraryService;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WithMockUser(username = "user", authorities = {"ROLE_ADMIN"})
 @WebMvcTest(CommentController.class)
@@ -28,66 +28,91 @@ class CommentControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @Autowired
-    private CommentRepository commentRepository;
-    private ObjectMapper mapper = new ObjectMapper();
+    @MockBean
+    private LibraryService service;
 
     @Test
     void getAllComments() throws Exception {
-        Book book = new Book().setId(1).setTitle("title");
-        Comment comment = new Comment().setId(1).setMessage("message").setBook(book);
-        when(commentRepository.findAll()).thenReturn(Collections.singletonList(comment));
+        Book book = new Book().setId("1").setTitle("title");
+        Comment comment = new Comment().setId("1").setMessage("message").setBook(book);
+        when(service.getAllComments()).thenReturn(Collections.singletonList(comment));
 
-        mvc.perform(get("/comments"))
-                .andExpect(status().isOk());
+        this.mvc.perform(get("/comments"))
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("comments"),
+                        view().name("comments")));
 
-        verify(commentRepository).findAll();
+        verify(service).getAllComments();
     }
 
     @Test
     void getComments() throws Exception {
-        Comment comment = new Comment().setId(1).setMessage("message");
-        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+        Comment comment = new Comment().setId("1").setMessage("message");
+        when(service.getComment(comment.getId())).thenReturn(comment);
 
-        mvc.perform(get("/comments/" + comment.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(get("/comments/" + comment.getId()))
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(1),
+                        model().attributeExists("comment"),
+                        view().name("comment")));
 
-        verify(commentRepository).findById(comment.getId());
+        verify(service).getComment(comment.getId());
     }
 
     @Test
     void createComment() throws Exception {
-        Comment comment = new Comment().setId(1).setMessage("message");
-        when(commentRepository.save(comment)).thenReturn(comment);
+        Comment comment = new Comment().setId("1").setMessage("message");
 
-        mvc.perform(post("/comments")
-                .contentType(APPLICATION_JSON_VALUE)
-                .content(mapper.writeValueAsString(comment)))
-                .andExpect(status().isCreated());
+        this.mvc.perform(get("/comments/create")
+                .param("message", comment.getMessage()))
+                .andExpect(matchAll(
+                        status().isOk(),
+                        model().size(2),
+                        model().attributeExists("books"),
+                        model().attributeExists("comment"),
+                        view().name("comment_new")));
 
-        verify(commentRepository).save(comment);
+        verify(service).getAllBooks();
+    }
+
+    @Test
+    void createComment2() throws Exception {
+        String bookId = "1";
+        Comment comment = new Comment().setId("1").setMessage("message");
+        when(service.createComment(comment.getMessage(), bookId)).thenReturn(comment);
+
+        this.mvc.perform(post("/comments/create")
+                .param("message", comment.getMessage())
+                .param("book", bookId))
+                .andExpect(redirectedUrl("/comments"));
+
+        verify(service).createComment(comment.getMessage(), bookId);
     }
 
     @Test
     void updateComment() throws Exception {
-        Comment comment = new Comment().setId(1).setMessage("message");
-        when(commentRepository.save(comment)).thenReturn(comment);
+        Comment comment = new Comment().setId("1").setMessage("message");
+        when(service.getComment(comment.getId())).thenReturn(comment);
 
-        mvc.perform(put("/comments/" + comment.getId())
-                .contentType(APPLICATION_JSON_VALUE)
-                .content(mapper.writeValueAsString(comment)))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/comments/update/" + comment.getId()))
+                .andExpect(redirectedUrl("/comments"));
 
-        verify(commentRepository).save(comment);
+        verify(service).getComment(comment.getId());
+        verify(service).updateComment(comment);
+        verify(service).getAllComments();
     }
 
     @Test
     void deleteComment() throws Exception {
-        Comment comment = new Comment().setId(1).setMessage("message");
+        Comment comment = new Comment().setId("1").setMessage("message");
+        when(service.deleteComment(comment.getId())).thenReturn(comment);
 
-        mvc.perform(delete("/comments/" + comment.getId()))
-                .andExpect(status().isOk());
+        this.mvc.perform(post("/comments/delete/" + comment.getId()))
+                .andExpect(redirectedUrl("/comments"));
 
-        verify(commentRepository).deleteById(comment.getId());
+        verify(service).deleteComment(comment.getId());
     }
 }
