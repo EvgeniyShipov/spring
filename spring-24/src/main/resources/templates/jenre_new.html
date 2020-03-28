@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New jenre</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form id="create-form" th:action="@{/jenres/create}" th:object="${jenre}" th:method="post" action="jenres.html">
+    <h1>New jenre:</h1>
+
+    <div class="row">
+        <label for="jenre">Jenre:</label>
+        <input id="jenre" type="text" th:field="*{type}" value="Tragedy"/>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>
