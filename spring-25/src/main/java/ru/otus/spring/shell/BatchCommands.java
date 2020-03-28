@@ -28,11 +28,9 @@ public class BatchCommands {
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
 
-    //http://localhost:8080/h2-console/
-
     @SneakyThrows
     @ShellMethod(value = "startMigrationJob", key = "sm")
-    public void startMigrationJobWithJobLauncher() {
+    public void startMigrationJob() {
         JobExecution execution = jobLauncher.run(importUserJob, new JobParameters());
         System.out.println(execution);
     }

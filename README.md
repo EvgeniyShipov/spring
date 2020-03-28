@@ -14,3 +14,4 @@
 11. [Spring WebFlux](https://github.com/EvgeniyShipov/spring/tree/master/spring-20) 
 12. [Spring Security: Механизмы аутентификации](https://github.com/EvgeniyShipov/spring/tree/master/spring-22) 
 13. [Spring Security: ACL](https://github.com/EvgeniyShipov/spring/tree/master/spring-24) 
+14. [Spring Batch ](https://github.com/EvgeniyShipov/spring/tree/master/spring-25) 
