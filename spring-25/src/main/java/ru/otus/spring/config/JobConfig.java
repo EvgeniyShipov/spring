@@ -42,14 +42,14 @@ public class JobConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job importUserJob(Step setup, Step step1, Step step2, Step step3, Step step4) {
+    public Job importUserJob(Step setup, Step migrateJenres, Step migrateAuthors, Step migrateBooks, Step migrateComments) {
         return jobBuilderFactory.get(DB_MIGRATION_JOB)
                 .incrementer(new RunIdIncrementer())
                 .flow(setup)
-                .next(step1)
-                .next(step2)
-                .next(step3)
-                .next(step4)
+                .next(migrateJenres)
+                .next(migrateAuthors)
+                .next(migrateBooks)
+                .next(migrateComments)
                 .end()
                 .build();
     }
@@ -67,8 +67,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Step step1(ItemReader<Jenre> jenreReader, ItemWriter<Jenre> jenreWriter) {
-        return stepBuilderFactory.get("step1")
+    public Step migrateJenres(ItemReader<Jenre> jenreReader, ItemWriter<Jenre> jenreWriter) {
+        return stepBuilderFactory.get("migrateJenres")
                 .<Jenre, Jenre>chunk(CHUNK_SIZE)
                 .reader(jenreReader)
                 .writer(jenreWriter)
@@ -76,8 +76,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Step step2(ItemReader<Author> authorReader, ItemWriter<Author> authorWriter) {
-        return stepBuilderFactory.get("step2")
+    public Step migrateAuthors(ItemReader<Author> authorReader, ItemWriter<Author> authorWriter) {
+        return stepBuilderFactory.get("migrateAuthors")
                 .<Author, Author>chunk(CHUNK_SIZE)
                 .reader(authorReader)
                 .writer(authorWriter)
@@ -85,8 +85,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Step step3(ItemReader<Book> bookReader, ItemWriter<Book> bookWriter) {
-        return stepBuilderFactory.get("step3")
+    public Step migrateBooks(ItemReader<Book> bookReader, ItemWriter<Book> bookWriter) {
+        return stepBuilderFactory.get("migrateBooks")
                 .<Book, Book>chunk(CHUNK_SIZE)
                 .reader(bookReader)
                 .writer(bookWriter)
@@ -94,8 +94,8 @@ public class JobConfig {
     }
 
     @Bean
-    public Step step4(ItemReader<Comment> commentReader, ItemWriter<Comment> commentWriter) {
-        return stepBuilderFactory.get("step4")
+    public Step migrateComments(ItemReader<Comment> commentReader, ItemWriter<Comment> commentWriter) {
+        return stepBuilderFactory.get("migrateComments")
                 .<Comment, Comment>chunk(CHUNK_SIZE)
                 .reader(commentReader)
                 .writer(commentWriter)
