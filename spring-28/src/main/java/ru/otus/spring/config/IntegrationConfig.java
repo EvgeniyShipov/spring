@@ -12,6 +12,9 @@ import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.scheduling.PollerMetadata;
 import ru.otus.spring.domain.Bug;
+import ru.otus.spring.service.DevOpsEngineer;
+import ru.otus.spring.service.JuniorProgrammer;
+import ru.otus.spring.service.SeniorProgrammer;
 
 import java.util.Arrays;
 
@@ -49,25 +52,25 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public IntegrationFlow juniorProgrammerFlow() {
+    public IntegrationFlow juniorProgrammerFlow(JuniorProgrammer programmer) {
         return IntegrationFlows.from("juniorProgrammerChannel")
-                .handle("juniorProgrammer", "fixBug")
+                .handle(programmer, "fixBug")
                 .channel("devOpsEngineerChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow seniorProgrammerFlow() {
+    public IntegrationFlow seniorProgrammerFlow(SeniorProgrammer programmer) {
         return IntegrationFlows.from("seniorProgrammerChannel")
-                .handle("seniorProgrammer", "fixBug")
+                .handle(programmer, "fixBug")
                 .channel("devOpsEngineerChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow devOpsEngineerFlow() {
+    public IntegrationFlow devOpsEngineerFlow(DevOpsEngineer engineer) {
         return IntegrationFlows.from("devOpsEngineerChannel")
-                .handle("devOpsEngineer", "installFix")
+                .handle(engineer, "installFix")
                 .aggregate()
                 .convert(String.class)
                 .channel("releaseChannel")
