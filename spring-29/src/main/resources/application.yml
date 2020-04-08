@@ -10,12 +10,15 @@ server:
   port: 8080
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
   endpoint:
     health:
       show-details: always
+      enabled: true
     logfile:
       enabled: true
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: ./logs/logger.log
