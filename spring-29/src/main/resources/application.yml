@@ -17,4 +17,4 @@ management:
 
 logging:
   file:
-    name: spring-29/logs/logger.log
+    name: logs/logger.log
