@@ -16,3 +16,4 @@
 13. [Spring Security: ACL](https://github.com/EvgeniyShipov/spring/tree/master/spring-24) 
 14. [Spring Batch](https://github.com/EvgeniyShipov/spring/tree/master/spring-25) 
 15. [Spring Integration: Endpoints и Flow Components](https://github.com/EvgeniyShipov/spring/tree/master/spring-28) 
+16. [Монолиты vs. Microservices (Round 2), Spring Boot Actuator - must have в микросервисах](https://github.com/EvgeniyShipov/spring/tree/master/spring-29) 

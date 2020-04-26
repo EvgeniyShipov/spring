@@ -1,0 +1,20 @@
+spring:
+  data:
+    mongodb:
+      port: 0
+      database: library
+    rest:
+      base-path: /datarest
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+
+logging:
+  file:
+    name: logs/logger.log
