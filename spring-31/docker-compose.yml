@@ -7,8 +7,8 @@ services:
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: jdbc:postgresql://postgres:5432/db
-      DB_USERNAME: camunda
-      DB_PASSWORD: camunda
+      DB_USERNAME: admin
+      DB_PASSWORD: admin
     ports:
       - 8080:8080
     depends_on:
