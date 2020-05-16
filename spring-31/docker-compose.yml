@@ -4,14 +4,23 @@ services:
   application:
     build: .
     container_name: application
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://postgres:5432/db
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
     ports:
       - 8080:8080
     depends_on:
-      - mongo
+      - postgres
 
-  mongo:
-    image: mongo:3.6
-    container_name: mongo
+  postgres:
+    image: postgres:12
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db
     restart: always
     ports:
-      - 27017:27017
+      - 5432:5432

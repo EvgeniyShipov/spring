@@ -39,7 +39,7 @@ class JenreControllerTest {
 
     @Test
     void getAllJenre() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
         when(service.getAllJenre()).thenReturn(Collections.singletonList(jenre));
 
         this.mvc.perform(get("/jenres"))
@@ -54,7 +54,7 @@ class JenreControllerTest {
 
     @Test
     void getJenre() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
         when(service.getJenre(jenre.getId())).thenReturn(jenre);
 
         this.mvc.perform(get("/jenres/" + jenre.getId()))
@@ -69,7 +69,7 @@ class JenreControllerTest {
 
     @Test
     void createJenre() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
 
         this.mvc.perform(get("/jenres/create")
                 .param("jenre", jenre.toString()))
@@ -80,7 +80,7 @@ class JenreControllerTest {
 
     @Test
     void createJenre2() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
         when(service.createJenre(jenre.getType())).thenReturn(jenre);
 
         this.mvc.perform(post("/jenres/create")
@@ -92,7 +92,7 @@ class JenreControllerTest {
 
     @Test
     void updateJenre() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
         when(service.getJenre(jenre.getId())).thenReturn(jenre);
 
         this.mvc.perform(post("/jenres/update/" + jenre.getId()))
@@ -105,7 +105,7 @@ class JenreControllerTest {
 
     @Test
     void deleteJenre() throws Exception {
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
         when(service.deleteJenre(jenre.getId())).thenReturn(jenre);
 
         this.mvc.perform(post("/jenres/delete/" + jenre.getId()))

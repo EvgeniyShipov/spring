@@ -40,7 +40,7 @@ class AuthorControllerTest {
 
     @Test
     void getAllAuthors() throws Exception {
-        Author author = new Author().setId("1").setName("name");
+        Author author = new Author().setId(1L).setName("name");
         when(service.getAllAuthors()).thenReturn(Collections.singletonList(author));
 
         this.mvc.perform(get("/authors"))
@@ -54,7 +54,7 @@ class AuthorControllerTest {
 
     @Test
     void getAuthor() throws Exception {
-        Author author = new Author().setId("1").setName("name");
+        Author author = new Author().setId(1L).setName("name");
         when(service.getAuthor(author.getId())).thenReturn(author);
 
         this.mvc.perform(get("/authors/" + author.getId()))
@@ -68,7 +68,7 @@ class AuthorControllerTest {
 
     @Test
     void createAuthor() throws Exception {
-        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+        Author author = new Author().setId(1L).setName("name").setSurname("surname").setPatronymic("patronymic");
 
         this.mvc.perform(get("/authors/create")
                 .param("name", author.getName()))
@@ -78,7 +78,7 @@ class AuthorControllerTest {
 
     @Test
     void createAuthor2() throws Exception {
-        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+        Author author = new Author().setId(1L).setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.createAuthor(author.getName(), author.getSurname(), author.getPatronymic())).thenReturn(author);
 
         this.mvc.perform(post("/authors/create")
@@ -92,7 +92,7 @@ class AuthorControllerTest {
 
     @Test
     void updateAuthor() throws Exception {
-        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
+        Author author = new Author().setId(1L).setName("name").setSurname("surname").setPatronymic("patronymic");
         when(service.getAuthor(author.getId())).thenReturn(author);
 
         this.mvc.perform(post("/authors/update/" + author.getId())
@@ -107,7 +107,7 @@ class AuthorControllerTest {
 
     @Test
     void deleteAuthor() throws Exception {
-        Author author = new Author().setId("1").setName("name");
+        Author author = new Author().setId(1L).setName("name");
         when(service.deleteAuthor(author.getId())).thenReturn(author);
 
         this.mvc.perform(post("/authors/delete/" + author.getId()))

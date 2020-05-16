@@ -18,9 +18,9 @@ import static org.mockito.Mockito.*;
 
 class LibraryServiceTest {
 
-    private static final String BOOK_ID = "1";
-    private static final String AUTHOR_ID = "1";
-    private static final String JENRE_ID = "1";
+    private static final Long BOOK_ID = 1L;
+    private static final Long AUTHOR_ID = 1L;
+    private static final Long JENRE_ID = 1L;
 
     private LibraryService libraryService;
     private BookRepository bookRepository;

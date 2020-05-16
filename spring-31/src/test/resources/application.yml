@@ -1,5 +1,11 @@
 spring:
-  data:
-    mongodb:
-      port: 0
-      database: library
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

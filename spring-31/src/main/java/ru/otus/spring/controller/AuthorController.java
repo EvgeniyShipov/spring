@@ -27,7 +27,7 @@ public class AuthorController {
     }
 
     @GetMapping("authors/{id}")
-    public String getAuthor(@PathVariable String id, Model model) {
+    public String getAuthor(@PathVariable long id, Model model) {
         Author author = service.getAuthor(id);
         model.addAttribute("author", author);
         return "author";
@@ -47,7 +47,7 @@ public class AuthorController {
     }
 
     @PostMapping("authors/update/{id}")
-    public String updateAuthor(@PathVariable String id, String name, String surname, String patronymic, Model model) {
+    public String updateAuthor(@PathVariable long id, String name, String surname, String patronymic, Model model) {
         Author author = service.getAuthor(id);
         author.setName(name).setSurname(surname).setPatronymic(patronymic);
         service.updateAuthor(author);
@@ -57,7 +57,7 @@ public class AuthorController {
     }
 
     @PostMapping("authors/delete/{id}")
-    public String deleteAuthor(@PathVariable String id, Model model) {
+    public String deleteAuthor(@PathVariable long id, Model model) {
         Author author = service.deleteAuthor(id);
         log.warning("Автор удален: " + author.getFullName());
         model.addAttribute("authors", service.getAllAuthors());

@@ -41,9 +41,9 @@ class BookControllerTest {
 
     @Test
     void getAllBooks() throws Exception {
-        Author author = new Author().setId("1").setName("name").setSurname("surname").setPatronymic("patronymic");
-        Jenre jenre = new Jenre().setId("1").setType("jenre");
-        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+        Author author = new Author().setId(1L).setName("name").setSurname("surname").setPatronymic("patronymic");
+        Jenre jenre = new Jenre().setId(1L).setType("jenre");
+        Book book = new Book().setId(1L).setTitle("title").setAuthor(author).setJenre(jenre);
         when(service.getAllBooks()).thenReturn(Collections.singletonList(book));
 
         this.mvc.perform(get("/books"))
@@ -57,7 +57,7 @@ class BookControllerTest {
 
     @Test
     void getBook() throws Exception {
-        Book book = new Book().setId("1").setTitle("title");
+        Book book = new Book().setId(1L).setTitle("title");
         when(service.getBook(book.getId())).thenReturn(book);
 
         this.mvc.perform(get("/books/" + book.getId()))
@@ -71,9 +71,9 @@ class BookControllerTest {
 
     @Test
     void createBook() throws Exception {
-        Jenre jenre = new Jenre().setId("1");
-        Author author = new Author().setId("1").setName("name");
-        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+        Jenre jenre = new Jenre().setId(1L);
+        Author author = new Author().setId(1L).setName("name");
+        Book book = new Book().setId(1L).setTitle("title").setAuthor(author).setJenre(jenre);
 
         this.mvc.perform(get("/books/create")
                 .param("book", book.toString()))
@@ -91,15 +91,15 @@ class BookControllerTest {
 
     @Test
     void createBook2() throws Exception {
-        Jenre jenre = new Jenre().setId("1");
-        Author author = new Author().setId("1").setName("name");
-        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+        Jenre jenre = new Jenre().setId(1L);
+        Author author = new Author().setId(1L).setName("name");
+        Book book = new Book().setId(1L).setTitle("title").setAuthor(author).setJenre(jenre);
         when(service.createBook(book.getTitle(), book.getAuthor().getId(), book.getJenre().getId())).thenReturn(book);
 
         this.mvc.perform(post("/books/create")
                 .param("title", book.getTitle())
-                .param("author", book.getAuthor().getId())
-                .param("jenre", book.getJenre().getId()))
+                .param("author", String.valueOf(book.getAuthor().getId()))
+                .param("jenre", String.valueOf(book.getJenre().getId())))
                 .andExpect(redirectedUrl("/books"));
 
         verify(service).createBook(book.getTitle(), author.getId(), jenre.getId());
@@ -107,9 +107,9 @@ class BookControllerTest {
 
     @Test
     void updateBook() throws Exception {
-        Jenre jenre = new Jenre().setId("1");
-        Author author = new Author().setId("1").setName("name");
-        Book book = new Book().setId("1").setTitle("title").setAuthor(author).setJenre(jenre);
+        Jenre jenre = new Jenre().setId(1L);
+        Author author = new Author().setId(1L).setName("name");
+        Book book = new Book().setId(1L).setTitle("title").setAuthor(author).setJenre(jenre);
 
         when(service.getBook(book.getId())).thenReturn(book);
         when(service.getAuthor(author.getId())).thenReturn(author);
@@ -117,8 +117,8 @@ class BookControllerTest {
 
         this.mvc.perform(post("/books/update/" + book.getId())
                 .param("title", book.getTitle())
-                .param("author", book.getAuthor().getId())
-                .param("jenre", book.getJenre().getId()))
+                .param("author", String.valueOf(book.getAuthor().getId()))
+                .param("jenre", String.valueOf(book.getJenre().getId())))
                 .andExpect(redirectedUrl("/books"));
 
         verify(service).getBook(book.getId());
@@ -129,8 +129,8 @@ class BookControllerTest {
 
     @Test
     void deleteBook() throws Exception {
-        Author author = new Author().setId("1").setName("name");
-        Book book = new Book().setId("1").setTitle("title").setAuthor(author);
+        Author author = new Author().setId(1L).setName("name");
+        Book book = new Book().setId(1L).setTitle("title").setAuthor(author);
         when(service.deleteBook(book.getId())).thenReturn(book);
 
         this.mvc.perform(post("/books/delete/" + book.getId()))

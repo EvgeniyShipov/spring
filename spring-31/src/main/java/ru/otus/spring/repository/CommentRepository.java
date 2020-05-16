@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface CommentRepository extends CrudRepository<Comment, Long> {
 
-    List<Comment> findByBookId(String idBook);
+    List<Comment> findByBookId(Long idBook);
 
-    Optional<Comment> findById(String id);
+    Optional<Comment> findById(Long id);
 
-    void deleteAllByBookId(String idBook);
+    void deleteAllByBookId(Long idBook);
 }

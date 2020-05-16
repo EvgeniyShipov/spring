@@ -29,7 +29,7 @@ public class BookController {
     }
 
     @GetMapping("books/{id}")
-    public String getBook(@PathVariable String id, Model model) {
+    public String getBook(@PathVariable long id, Model model) {
         Book book = service.getBook(id);
         List<Author> authors = service.getAllAuthors();
         List<Jenre> jenres = service.getAllJenre();
@@ -49,7 +49,7 @@ public class BookController {
     }
 
     @PostMapping("books/create")
-    public String createBook(String title, String author, String jenre, Model model) {
+    public String createBook(String title, long author, long jenre, Model model) {
         Book book = service.createBook(title, author, jenre);
         log.info(String.format("Добавлена новая книга: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());
@@ -57,7 +57,7 @@ public class BookController {
     }
 
     @PostMapping("books/update/{id}")
-    public String updateBook(@PathVariable String id, String title, String author, String jenre, Model model) {
+    public String updateBook(@PathVariable long id, String title, long author, long jenre, Model model) {
         Book book = service.getBook(id);
         book.setTitle(title);
         book.setAuthor(service.getAuthor(author));
@@ -69,7 +69,7 @@ public class BookController {
     }
 
     @PostMapping("books/delete/{id}")
-    public String deleteBook(@PathVariable String id, Model model) {
+    public String deleteBook(@PathVariable long id, Model model) {
         Book book = service.deleteBook(id);
         log.warning(String.format("Книга удалена: %s, автор %s\n", book.getTitle(), book.getAuthor().getFullName()));
         model.addAttribute("books", service.getAllBooks());

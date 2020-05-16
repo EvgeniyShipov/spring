@@ -2,20 +2,30 @@ package ru.otus.spring.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.*;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
+@Entity
+@Table(name = "books")
 @Accessors(chain = true)
-@Document(collection = "books")
 public class Book {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
+
+    @Column(name = "title", nullable = false)
     private String title;
-    @DBRef
+
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "id_author")
     private Author author;
-    @DBRef
+
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "id_jenre")
     private Jenre jenre;
 }
