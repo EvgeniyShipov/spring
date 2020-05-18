@@ -5,10 +5,11 @@ services:
     build: .
     container_name: application
     environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_URL: jdbc:postgresql://postgres:5432/db
-      DB_USERNAME: admin
-      DB_PASSWORD: admin
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/library
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
     ports:
       - 8080:8080
     depends_on:
@@ -20,7 +21,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: db
+      POSTGRES_DB: library
     restart: always
     ports:
       - 5432:5432
