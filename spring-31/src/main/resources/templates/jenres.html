@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Jenre</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Jenre:</h1>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="jenre : ${jenres}">
+        <td th:text="${jenre.id}">1</td>
+        <td th:text="${jenre.type}">John</td>
+        <form th:action="@{/jenres/{id}(id=${jenre.id})}" th:method="get">
+            <td>
+                <button type="submit">Edit</button>
+            </td>
+        </form>
+        <form th:action="@{/jenres/delete/{id}(id=${jenre.id})}" th:method="post">
+            <td>
+                <button type="submit">Delete</button>
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+<h4>
+    <a th:href="@{/jenres/create}" href="jenre_new.html">create new</a>
+</h4>
+<h4>
+    <a th:href="@{/}" href="index.html">back</a>
+</h4>
+</body>
+</html>
