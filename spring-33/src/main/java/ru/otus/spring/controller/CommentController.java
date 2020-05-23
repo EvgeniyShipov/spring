@@ -1,0 +1,76 @@
+package ru.otus.spring.controller;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
+import ru.otus.spring.service.LibraryService;
+
+import java.util.List;
+
+@Log
+@Controller
+@RequiredArgsConstructor
+public class CommentController {
+
+    private final LibraryService service;
+
+    @GetMapping("comments")
+    @HystrixCommand(groupKey = "Comments", commandKey = "GetAllComments")
+    public String getAllComments(Model model) {
+        List<Comment> comments = service.getAllComments();
+        model.addAttribute("comments", comments);
+        return "comments";
+    }
+
+    @GetMapping("comments/{id}")
+    @HystrixCommand(groupKey = "Comments", commandKey = "GetComment")
+    public String getComment(@PathVariable long id, Model model) {
+        Comment comment = service.getComment(id);
+        model.addAttribute("comment", comment);
+        return "comment";
+    }
+
+    @GetMapping("comments/create")
+    @HystrixCommand(groupKey = "Comments", commandKey = "CreateComment")
+    public String createComment(Comment comment, Model model) {
+        List<Book> books = service.getAllBooks();
+        model.addAttribute("books", books);
+        return "comment_new";
+    }
+
+    @PostMapping("comments/create")
+    @HystrixCommand(groupKey = "Comments", commandKey = "CreatedComment")
+    public String createComment(String message, long book, Model model) {
+        Comment comment = service.createComment(message, book);
+        log.info("Добавлен новый комментарий: " + comment.getMessage());
+        model.addAttribute("comments", service.getAllComments());
+        return "redirect:/comments";
+    }
+
+    @PostMapping("comments/update/{id}")
+    @HystrixCommand(groupKey = "Comments", commandKey = "UpdateComment")
+    public String updateComment(@PathVariable long id, String message, Model model) {
+        Comment comment = service.getComment(id);
+        comment.setMessage(message);
+        service.updateComment(comment);
+        log.info("Комментарий изменен: " + comment.getMessage());
+        model.addAttribute("comments", service.getAllComments());
+        return "redirect:/comments";
+    }
+
+    @PostMapping("comments/delete/{id}")
+    @HystrixCommand(groupKey = "Comments", commandKey = "DeleteComment")
+    public String deleteComment(@PathVariable long id, Model model) {
+        Comment comment = service.deleteComment(id);
+        log.warning("Комментарий удален: " + comment.getMessage());
+        model.addAttribute("comments", service.getAllComments());
+        return "redirect:/comments";
+    }
+}

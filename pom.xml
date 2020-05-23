@@ -28,6 +28,7 @@
         <module>spring-28</module>
         <module>spring-29</module>
         <module>spring-31</module>
+        <module>spring-33</module>
     </modules>
 
 </project>
