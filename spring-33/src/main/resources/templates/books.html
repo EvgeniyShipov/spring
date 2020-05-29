@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Books:</h1>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.id}">1</td>
+        <td th:text="${book.title}">Title</td>
+        <td th:text="${book.author.getFullName()}">John Steinbeck Ernst</td>
+        <td th:text="${book.jenre.type}">Comedy</td>
+        <form th:action="@{/books/{id}(id=${book.id})}" th:method="get">
+            <td>
+                <button type="submit">Edit</button>
+            </td>
+        </form>
+        <form th:action="@{/books/delete/{id}(id=${book.id})}" th:method="post">
+            <td>
+                <button type="submit">Delete</button>
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+<h4>
+    <a th:href="@{/books/create}" href="book_new.html">create new</a>
+</h4>
+<h4>
+    <a th:href="@{/}" href="index.html">back</a>
+</h4>
+</body>
+</html>

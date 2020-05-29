@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New comment</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form id="create-form" th:action="@{/comments/create}" th:object="${comment}" th:method="post" action="comments.html">
+    <h1>New comment:</h1>
+
+    <div class="row">
+        <label for="message">Message:</label>
+        <input id="message" type="text" th:field="*{message}" value="Just a message"/>
+    </div>
+
+    <div class="row">
+        <label for="book">Book:</label>
+        <select id="book" th:field="*{book}">
+            <option th:each="book : ${books}"
+                    th:value="${book.id}"
+                    th:utext="${book.title}"
+                    value="The Winter of Our Discontent">Book
+            </option>
+        </select>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>

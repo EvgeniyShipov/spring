@@ -18,3 +18,4 @@
 15. [Spring Integration: Endpoints и Flow Components](https://github.com/EvgeniyShipov/spring/tree/master/spring-28) 
 16. [Монолиты vs. Microservices (Round 2), Spring Boot Actuator - must have в микросервисах](https://github.com/EvgeniyShipov/spring/tree/master/spring-29) 
 17. [Docker, оркестрация, облака, облачные хостинги](https://github.com/EvgeniyShipov/spring/tree/master/spring-31) 
+18. [Spring Cloud Service Discovery, Zuul, Hystrix, Sleuth, Zipkin](https://github.com/EvgeniyShipov/spring/tree/master/spring-33) 
